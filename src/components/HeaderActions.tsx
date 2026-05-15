@@ -6,7 +6,7 @@ import { SOSKA_SUPPORT_WHATSAPP, buildWhatsAppUrl } from '../constants/support';
 import { useApp } from '../context/AppContext';
 import { t } from '../i18n';
 import type { RootStackParamList } from '../navigation/types';
-import { colors, fontSizes, space } from '../theme';
+import { colors, fontSizes, radius, space } from '../theme';
 
 export function HeaderActions() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -22,20 +22,32 @@ export function HeaderActions() {
 
   return (
     <View style={styles.row}>
-      <TouchableOpacity onPress={onSupport} hitSlop={8}>
-        <Text style={styles.link}>{t(language, 'support')}</Text>
+      <TouchableOpacity style={styles.pill} onPress={onSupport} hitSlop={6} activeOpacity={0.88}>
+        <Text style={styles.pillText}>{t(language, 'support')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        style={[styles.pill, styles.pillEmphasis]}
         onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Gate' }] })}
-        hitSlop={8}
+        hitSlop={6}
+        activeOpacity={0.88}
       >
-        <Text style={styles.link}>{t(language, 'switchRole')}</Text>
+        <Text style={styles.pillEmphasisText}>{t(language, 'switchRole')}</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: space.md, alignItems: 'center', marginRight: space.sm },
-  link: { color: colors.primary, fontWeight: '600', fontSize: fontSizes.caption },
+  row: { flexDirection: 'row', gap: space.sm, alignItems: 'center', marginRight: space.xs },
+  pill: {
+    paddingVertical: 6,
+    paddingHorizontal: space.md,
+    borderRadius: radius.full,
+    backgroundColor: colors.chip,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  pillText: { color: colors.text, fontWeight: '800', fontSize: fontSizes.micro },
+  pillEmphasis: { backgroundColor: colors.primarySoft, borderColor: colors.border },
+  pillEmphasisText: { color: colors.primary, fontWeight: '900', fontSize: fontSizes.micro },
 });

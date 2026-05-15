@@ -3,23 +3,36 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import type { RootStackParamList } from '../../navigation/types';
 import { mockChats } from '../../data/mock';
+import { ChatThreadRow } from '../../components/marketplace';
 import { Card, Muted, ScreenScroll } from '../../components/ui';
-import { space } from '../../theme';
+import { colors, fontSizes, radius, space } from '../../theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BuyerChat'>;
 
+function shortTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
 export default function BuyerChatScreen({}: Props) {
   return (
-    <ScreenScroll title="Buyer chat" subtitle="Central working area of the deal (mock threads).">
-      {mockChats.map((ch) => (
-        <Card key={ch.chat_id}>
-          <Text style={{ fontWeight: '800', color: '#1B1F24' }}>{ch.title}</Text>
-          <Text style={{ color: '#5C6570', fontSize: 13 }}>{ch.type.replace(/_/g, ' ')}</Text>
-          <View style={{ height: space.sm }} />
-          <Text style={{ color: '#1B1F24' }}>{ch.last_message_preview}</Text>
-          <Muted>AI translator: mock translated preview ↔ original in real build.</Muted>
-        </Card>
-      ))}
+    <ScreenScroll title="Chats" subtitle="Deal threads — AI translations appear inline in production.">
+      <View style={{ gap: space.md }}>
+        {mockChats.map((ch) => (
+          <ChatThreadRow
+            key={ch.chat_id}
+            title={ch.title}
+            typeLabel={ch.type.replace(/_/g, ' ')}
+            preview={ch.last_message_preview}
+            timeLabel={shortTime(ch.updated_at)}
+          />
+        ))}
+      </View>
+      <Card>
+        <Text style={{ fontSize: fontSizes.caption, fontWeight: '800', color: colors.textMuted }}>Translator</Text>
+        <Muted>Mock only: incoming messages can be shown with an original + translated line per architecture.</Muted>
+      </Card>
     </ScreenScroll>
   );
 }
