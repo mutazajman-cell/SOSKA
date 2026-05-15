@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SOSKA</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef0f3;font-family:Arial,sans-serif;color:#111}.app{max-width:430px;margin:auto;min-height:100vh;background:#f7f7f8;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.logo{font-weight:800;font-size:22px}.pill{border:1px solid #ddd;background:white;border-radius:20px;padding:8px 12px;font-size:13px}.card{background:white;border:1px solid #e6e6e6;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 8px #0000000d}.title{font-size:22px;font-weight:800;margin:8px 0}.sub{color:#666;font-size:14px;margin:4px 0 12px}.btn{width:100%;border:0;border-radius:14px;padding:13px 14px;background:#111;color:white;font-weight:700;margin:8px 0;cursor:pointer}.btn2{background:white;color:#111;border:1px solid #ddd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.role{padding:14px;border-radius:16px;border:1px solid #ddd;background:white;text-align:left}.role b{display:block}.chip{display:inline-block;background:#fff;border:1px solid #ddd;border-radius:20px;padding:8px 12px;margin:4px;font-weight:700;font-size:13px}.search{width:100%;padding:14px;border:1px solid #ddd;border-radius:14px;font-size:16px;background:white;margin:10px 0}.row{display:flex;justify-content:space-between;gap:12px;margin:7px 0}.muted{color:#666}.price{font-weight:800;color:#067a46}.tag{display:inline-block;background:#eef2ff;border-radius:12px;padding:5px 8px;margin:4px 4px 4px 0;font-size:12px}.back{color:#0b63ce;font-weight:700;margin:8px 0;display:inline-block;cursor:pointer}.warn{background:#fff8e1;border:1px solid #ffe08a;border-radius:14px;padding:10px;margin:10px 0;font-size:13px}.msg{padding:10px 12px;border-radius:14px;margin:8px 0;max-width:85%}.me{background:#dbeafe;margin-left:auto}.them{background:#eee}.sys{background:#fff8e1;text-align:center;max-width:100%;font-size:12px}.dash .card{cursor:pointer}.small{font-size:12px}.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+const db={
+models:[
+{id:"lenovo-t14-g5",brand:"Lenovo",name:"ThinkPad T14 Gen 5",cat:"Corporate",spec:"Business laptop · 14 inch · Intel Core Ultra",range:"AED 1,850–2,550",count:3},
+{id:"dell-5440",brand:"Dell",name:"Latitude 5440",cat:"Corporate",spec:"Corporate laptop · 14 inch · i5/i7",range:"AED 1,350–1,750",count:2},
+{id:"panasonic-fz55",brand:"Panasonic",name:"Toughbook FZ-55",cat:"Rugged",spec:"Rugged laptop · semi-rugged · field use",range:"AED 2,400–3,200",count:2}
+],
+configs:[
+{id:"t14-u5",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 5",ram:"16GB",ssd:"512GB",screen:"14 inch IPS",grade:"Grade A",range:"AED 1,850–2,150"},
+{id:"t14-u7",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 7",ram:"32GB",ssd:"1TB",screen:"14 inch IPS",grade:"Grade A",range:"AED 2,200–2,550"},
+{id:"dell-i5",model:"dell-5440",cpu:"Intel Core i5-1335U",ram:"16GB",ssd:"256GB",screen:"14 inch FHD",grade:"Grade B+",range:"AED 1,350–1,550"},
+{id:"dell-i7",model:"dell-5440",cpu:"Intel Core i7-1355U",ram:"16GB",ssd:"512GB",screen:"14 inch FHD",grade:"Grade A",range:"AED 1,600–1,750"},
+{id:"fz55-16",model:"panasonic-fz55",cpu:"Intel Core i7-10610U",ram:"16GB",ssd:"512GB",screen:"15.6 inch FHD",grade:"Grade A",range:"AED 2,400–2,800"},
+{id:"fz55-32",model:"panasonic-fz55",cpu:"Intel Core i7-10610U",ram:"32GB",ssd:"1TB",screen:"15.6 inch FHD",grade:"Grade A",range:"AED 2,900–3,200"}
+],
+suppliers:[
+{id:"s1",name:"Al Noor Computers",area:"Industrial Area, Sharjah"},
+{id:"s2",name:"Gulf Tech Laptops",area:"Rolla, Sharjah"},
+{id:"s3",name:"Desert Devices",area:"Al Majaz, Sharjah"}
+],
+offers:[
+{id:"o1",config:"t14-u5",supplier:"s1",price:"AED 1,950",stock:"Active",condition:"Grade A",source:"Supplier updated"},
+{id:"o2",config:"t14-u5",supplier:"s2",price:"AED 1,880",stock:"Active",condition:"Grade B+",source:"Employee updated"},
+{id:"o3",config:"t14-u7",supplier:"s1",price:"AED 2,350",stock:"Active",condition:"Grade A",source:"Supplier updated"},
+{id:"o4",config:"dell-i5",supplier:"s2",price:"AED 1,450",stock:"Active",condition:"Grade B+",source:"Employee updated"},
+{id:"o5",config:"dell-i7",supplier:"s2",price:"AED 1,700",stock:"Needs update",condition:"Grade A",source:"Employee updated"},
+{id:"o6",config:"fz55-16",supplier:"s3",price:"AED 2,600",stock:"Active",condition:"Grade A",source:"Admin updated"},
+{id:"o7",config:"fz55-32",supplier:"s3",price:"AED 3,100",stock:"Active",condition:"Grade A",source:"Admin updated"}
+]
+};
+let st={role:null,model:null,config:null,offer:null};
+const app=document.getElementById("app");
+const M=id=>db.models.find(x=>x.id===id), C=id=>db.configs.find(x=>x.id===id), O=id=>db.offers.find(x=>x.id===id), S=id=>db.suppliers.find(x=>x.id===id);
+
+function shell(title,body){app.innerHTML=`<div class="top"><div class="logo">SOSKA</div><button class="pill" onclick="entry()">Switch role</button></div>${body}`}
+
+function entry(){
+st={role:null,model:null,config:null,offer:null};
+app.innerHTML=`
+<div class="card">
+  <div class="logo">SOSKA</div>
+  <div class="sub">Sharjah laptop/electronics intermediary app</div>
+</div>
+<div class="card">
+  <b>Language</b>
+  <div><span class="chip">Russian</span><span class="chip">Urdu</span><span class="chip">Arabic</span><span class="chip">English</span></div>
+</div>
+<div class="card">
+  <b>Choose role</b>
+  <div class="grid">
+    ${roleBtn("Buyer","Search → model → config → seller")}
+    ${roleBtn("Supplier","Offers, stock, chats")}
+    ${roleBtn("Employee","Suppliers, stock, freshness")}
+    ${roleBtn("Admin","Users, moderation, disputes")}
+    ${roleBtn("Expert","Product inspection only")}
+    ${roleBtn("Cargo","Pickup and delivery")}
+  </div>
+</div>
+<div class="warn">Employee ≠ Expert. AI translator works only inside chats. No trading, radar or terminal UI.</div>`;
+}
+function roleBtn(r,t){return `<button class="role" onclick="goRole('${r}')"><b>${r}</b><span class="small muted">${t}</span></button>`}
+function goRole(r){st.role=r;if(r==="Buyer")buyerHome();else dashboard(r)}
+
+function buyerHome(){
+shell("Buyer",`
+<h1 class="title">Find model</h1>
+<input class="search" id="q" placeholder="Search model" oninput="drawModels()">
+<div><span class="chip">Laptops</span><span class="chip">Rugged</span><span class="chip">Corporate</span><span class="chip">Refurbished</span></div>
+<div id="models"></div>`);
+drawModels();
+}
+function drawModels(){
+let q=(document.getElementById("q")?.value||"").toLowerCase();
+let html=db.models.filter(m=>(m.brand+" "+m.name).toLowerCase().includes(q)).map(m=>`
+<div class="card">
+  <div class="card-title"><b>${m.brand} ${m.name}</b></div>
+  <div class="sub">${m.spec}</div>
+  <div class="row"><span>${m.count} seller offers</span><span class="price">${m.range}</span></div>
+  <button class="btn" onclick="configs('${m.id}')">View configurations</button>
+</div>`).join("");
+document.getElementById("models").innerHTML=html;
+}
+function configs(modelId){
+st.model=modelId;
+let m=M(modelId);
+let list=db.configs.filter(c=>c.model===modelId);
+shell("Configurations",`
+<span class="back" onclick="buyerHome()">← Back</span>
+<h1 class="title">${m.brand} ${m.name}</h1>
+<div class="sub">Choose exact configuration. Only this model is shown.</div>
+${list.map(c=>`
+<div class="card">
+  <b>${c.cpu} · ${c.ram} · ${c.ssd}</b>
+  <div><span class="tag">${c.screen}</span><span class="tag">${c.grade}</span></div>
+  <div class="row"><span>Price range</span><span class="price">${c.range}</span></div>
+  <button class="btn" onclick="offers('${c.id}')">Compare sellers</button>
+</div>`).join("")}`);
+}
+function offers(configId){
+st.config=configId;
+let c=C(configId), m=M(c.model), list=db.offers.filter(o=>o.config===configId);
+shell("Seller offers",`
+<span class="back" onclick="configs('${m.id}')">← Back</span>
+<h1 class="title">${m.brand} ${m.name}</h1>
+<div class="sub">${c.cpu} · ${c.ram} · ${c.ssd}</div>
+${list.map(o=>{let s=S(o.supplier);return `
+<div class="card">
+  <b>${s.name}</b>
+  <div class="sub">${s.area}</div>
+  <div class="row"><span>Price</span><span class="price">${o.price}</span></div>
+  <div class="row"><span>Stock</span><b>${o.stock}</b></div>
+  <div class="row"><span>Condition</span><b>${o.condition}</b></div>
+  <div class="small muted">${o.source}</div>
+  <button class="btn" onclick="product('${o.id}')">Open product</button>
+  <button class="btn btn2" onclick="chat('${o.id}')">Chat</button>
+  <button class="btn btn2" onclick="check('${o.id}')">Request check</button>
+  <button class="btn btn2" onclick="delivery('${o.id}')">Request delivery</button>
+</div>`}).join("")}`);
+}
+function product(offerId){
+st.offer=offerId;let o=O(offerId), c=C(o.config), m=M(c.model), s=S(o.supplier);
+shell("Product",`
+<span class="back" onclick="offers('${c.id}')">← Back</span>
+<h1 class="title">${m.brand} ${m.name}</h1>
+<div class="card">
+  <div class="sub">${c.cpu} · ${c.ram} · ${c.ssd} · ${c.screen}</div>
+  <div class="row"><span>Seller</span><b>${s.name}</b></div>
+  <div class="row"><span>Location</span><b>${s.area}</b></div>
+  <div class="row"><span>Price</span><span class="price">${o.price}</span></div>
+  <div class="row"><span>Stock</span><b>${o.stock}</b></div>
+  <div class="row"><span>Condition</span><b>${o.condition}</b></div>
+  <button class="btn" onclick="chat('${o.id}')">Chat</button>
+  <button class="btn btn2" onclick="check('${o.id}')">Request Check</button>
+  <button class="btn btn2" onclick="delivery('${o.id}')">Request Delivery</button>
+  <button class="btn btn2" onclick="window.open('https://maps.google.com?q=${encodeURIComponent(s.area)}')">Open Google Maps</button>
+</div>`);
+}
+function chat(offerId){let o=O(offerId), c=C(o.config);shell("Chat",`
+<span class="back" onclick="product('${offerId}')">← Back</span>
+<h1 class="title">Chat inside SOSKA</h1>
+<div class="card">
+  <div class="msg me">Is this exact configuration available?</div>
+  <div class="msg them">Yes, available today in Sharjah.</div>
+  <div class="msg sys">AI translation placeholder: translation works only inside chat messages.</div>
+</div>
+<button class="btn" onclick="check('${offerId}')">Request Check</button>
+<button class="btn btn2" onclick="delivery('${offerId}')">Request Delivery</button>`)}
+
+function check(offerId){let o=O(offerId), c=C(o.config), m=M(c.model);shell("Check",`
+<span class="back" onclick="product('${offerId}')">← Back</span>
+<h1 class="title">Request product check</h1>
+<div class="card">
+  <b>${m.brand} ${m.name}</b><div class="sub">${c.cpu} · ${c.ram} · ${c.ssd}</div>
+  <div class="row"><span>Status</span><b>Requested</b></div>
+  <div class="row"><span>Expert</span><b>To be assigned</b></div>
+  <div class="warn">Expert checks product condition. Employee does not replace Expert.</div>
+  <button class="btn">Create check request</button>
+</div>`)}
+
+function delivery(offerId){let o=O(offerId), s=S(o.supplier);shell("Delivery",`
+<span class="back" onclick="product('${offerId}')">← Back</span>
+<h1 class="title">Request delivery</h1>
+<div class="card">
+  <div class="row"><span>Pickup</span><b>${s.area}</b></div>
+  <div class="row"><span>Status</span><b>Requested</b></div>
+  <button class="btn" onclick="window.open('https://maps.google.com?q=${encodeURIComponent(s.area)}')">Open route in Google Maps</button>
+  <button class="btn btn2">Create delivery request</button>
+</div>`)}
+
+function dashboard(role){
+let content={
+Supplier:["Products","Add / edit offer","Requests / chats","Stock update","Profile"],
+Employee:["Supplier registration","Supplier list","Supplier detail","Stock entry","Data freshness","Employee notes"],
+Expert:["Check request detail","Inspection checklist","Upload check result","Expert chat"],
+Cargo:["Delivery detail","Cargo chat","Status update","Open Google Maps route"],
+Admin:["User management","Supplier management","Model library","Offers moderation","Chats monitoring","Checks management","Delivery management","Disputes / issues"]
+}[role]||[];
+let notes={
+Supplier:"Supplier manages own offers and stock.",
+Employee:"Employee manages suppliers, stock and freshness. Employee is NOT Expert.",
+Expert:"Expert checks one specific product in one specific deal.",
+Cargo:"Cargo handles delivery only. No stock edits. No inspections.",
+Admin:"Admin controls users, moderation, assignments and disputes."
+}[role];
+shell(role,`
+<span class="back" onclick="entry()">← Back to roles</span>
+<h1 class="title">${role} dashboard</h1>
+<div class="warn">${notes}</div>
+<div class="dash">${content.map(x=>`<div class="card"><b>${x}</b><div class="sub">Mock screen placeholder</div></div>`).join("")}</div>`);
+}
+entry();
+</script>
+</body>
+</html>
