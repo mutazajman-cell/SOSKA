@@ -273,26 +273,30 @@ drawModels("");
 const setFilter=f=>{st.filter=f;buyerHome();};
 
 const drawModels=q=>{
-const list=tf.getElementById("model-list");
-const q2=q.toLowerCase();
-const models=db.models.filter(m=>{
-if(st.filter!=="all"&&m.cat!==st.filter)return false;
-if(q2&&!m.name.toLowerCase().includes(q2))return false;
-return true;
-});
-list.innerHTML=models.map(m=>`
-<div class="model-card" onclick="configs('${m.id}')">
-<div>
-<b>${m.name}</b>
-<s>${m.spec}</s>
-<s><span class="tag">${m.cat}</span> ${m.count} предложения</s>
-</div>
-<div style="text-align:right">
-<div class="cat-badge">${m.cat}</div>
-<s style="display:block;margin-top:4px">${m.range}</s>
-</div>
-</div>
-`).join("`)" + `;` + `"`;
+  const list=document.getElementById("model-list");
+  if(!list)return;
+
+  const q2=(q||"").toLowerCase();
+
+  const models=db.models.filter(m=>{
+    if(st.filter!=="all"&&m.cat!==st.filter)return false;
+    if(q2&&!m.name.toLowerCase().includes(q2))return false;
+    return true;
+  });
+
+  list.innerHTML=models.map(m=>`
+    <div class="model-card" onclick="configs('${m.id}')">
+      <div>
+        <b>${m.name}</b>
+        <s>${m.spec}</s>
+        <s><span class="tag">${m.cat}</span> ${m.count} предложения</s>
+      </div>
+      <div style="text-align:right">
+        <div class="cat-badge">${m.cat}</div>
+        <s style="display:block;margin-top:4px">${m.range}</s>
+      </div>
+    </div>
+  `).join("");
 };
 
 const tf={getElementById:id=>document.getElementById(id)};
