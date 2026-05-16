@@ -688,3 +688,73 @@ Create the clean application skeleton with all role screens, navigation, mock da
 
 Before coding:
 Summarize the planned file structure and confirm that no old JNP SIGNAL logic is being used.
+---
+
+## FIXED BOTTOM NAVIGATION — REQUIRED UI RULE
+
+SOSKA must feel like a real mobile app in a phone browser.
+
+After the user selects a role, every role dashboard must have fixed bottom navigation.
+
+The bottom navigation must:
+- stay visible at the bottom of the mobile screen;
+- use simple icons and text labels;
+- highlight the active tab;
+- not cover page content;
+- add enough bottom padding to the main content;
+- work in mobile browser;
+- not be replaced by a desktop top menu.
+
+Buyer bottom tabs:
+- Главная
+- Поиск
+- Избранное
+- Чаты
+- Профиль
+
+Supplier bottom tabs:
+- Товары
+- Добавить
+- Заявки
+- Чаты
+- Профиль
+
+Employee bottom tabs:
+- Поставщики
+- Добавить
+- Проверка данных
+- Задачи
+- Профиль
+
+Expert bottom tabs:
+- Запросы
+- В работе
+- Завершено
+- Чат
+- Профиль
+
+Cargo bottom tabs:
+- Доставки
+- В пути
+- Завершено
+- Чат
+- Профиль
+
+Admin bottom tabs:
+- Пользователи
+- Товары
+- Проверки
+- Доставки
+- Чаты
+
+Product card may also have a sticky bottom action bar:
+- Chat
+- Request Check
+- Request Delivery
+- Open Google Maps
+
+Important:
+Do not move all main actions to the top of the page.
+Do not hide the main actions inside complex menus.
+Do not create a desktop-style dashboard.
+Use the attached mobile reference: bottom buttons must be visible like a real app.
