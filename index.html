@@ -1,11 +1,129 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#ffffff" />
 <title>SOSKA</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#eef0f3;font-family:Arial,sans-serif;color:#111}.app{max-width:430px;margin:auto;min-height:100vh;background:#f7f7f8;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.logo{font-weight:800;font-size:22px}.pill{border:1px solid #ddd;background:white;border-radius:20px;padding:8px 12px;font-size:13px}.card{background:white;border:1px solid #e6e6e6;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 8px #0000000d}.title{font-size:22px;font-weight:800;margin:8px 0}.sub{color:#666;font-size:14px;margin:4px 0 12px}.btn{width:100%;border:0;border-radius:14px;padding:13px 14px;background:#111;color:white;font-weight:700;margin:8px 0;cursor:pointer}.btn2{background:white;color:#111;border:1px solid #ddd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.role{padding:14px;border-radius:16px;border:1px solid #ddd;background:white;text-align:left}.role b{display:block}.chip{display:inline-block;background:#fff;border:1px solid #ddd;border-radius:20px;padding:8px 12px;margin:4px;font-weight:700;font-size:13px}.search{width:100%;padding:14px;border:1px solid #ddd;border-radius:14px;font-size:16px;background:white;margin:10px 0}.row{display:flex;justify-content:space-between;gap:12px;margin:7px 0}.muted{color:#666}.price{font-weight:800;color:#067a46}.tag{display:inline-block;background:#eef2ff;border-radius:12px;padding:5px 8px;margin:4px 4px 4px 0;font-size:12px}.back{color:#0b63ce;font-weight:700;margin:8px 0;display:inline-block;cursor:pointer}.warn{background:#fff8e1;border:1px solid #ffe08a;border-radius:14px;padding:10px;margin:10px 0;font-size:13px}.msg{padding:10px 12px;border-radius:14px;margin:8px 0;max-width:85%}.me{background:#dbeafe;margin-left:auto}.them{background:#eee}.sys{background:#fff8e1;text-align:center;max-width:100%;font-size:12px}.dash .card{cursor:pointer}.small{font-size:12px}.hidden{display:none}
+*{box-sizing:border-box}
+body{margin:0;background:#eef0f3;font-family:Arial,sans-serif;color:#111;-webkit-tap-highlight-color:transparent}
+.app{max-width:430px;margin:auto;min-height:100vh;background:#f7f7f8;padding:16px;padding-bottom:80px}
+
+/* Entry screen */
+.entry-wrap{text-align:center;padding:40px 16px}
+.entry-logo{font-size:42px;font-weight:900;margin-bottom:8px}
+.entry-sub{color:#777;font-size:15px;margin-bottom:24px}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.lang-btn{background:white;border:1px solid #ddd;border-radius:14px;padding:14px;font-size:15px;font-weight:700;cursor:pointer}
+.lang-btn.active{background:#111;color:white;border-color:#111}
+.role-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.role{background:white;border:1px solid #ddd;border-radius:16px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.role b{display:block;font-size:16px}
+.role s{color:#888;font-size:12px}
+.role.cargo{border-color:#a855f7}
+.role.expert{border-color:#f59e0b}
+.role.empl{border-color:#10b981}
+.role.supplier{border-color:#3b82f6}
+.role.admin{border-color:#ef4444}
+.role.buyer{border-color:#111;background:#111;color:white}
+.role.buyer s{color:#aaa}
+.warn-entry{background:#fff8e1;border:1px solid #ffe08a;border-radius:14px;padding:12px;margin-top:20px;font-size:13px;text-align:left}
+
+/* Top bar */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.logo{font-weight:800;font-size:22px}
+.whatsapp-pill{background:#25D366;color:white;border-radius:20px;padding:8px 12px;font-size:13px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+
+/* Tabs (entry screen) */
+.tab-bar{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{background:white;border:1px solid #ddd;border-radius:20px;padding:8px 14px;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.tab.active{background:#111;color:white;border-color:#111}
+
+/* Cards */
+.card{background:white;border:1px solid #e6e6e6;border-radius:18px;padding:16px;margin:8px 0;box-shadow:0 2px 8px #0000000d}
+.card.clickable{cursor:pointer}
+.title{font-size:22px;font-weight:800;margin:8px 0}
+.sub{color:#666;font-size:14px;margin:4px 0 12px}
+.muted{color:#888;font-size:13px}
+
+/* Buttons */
+.btn{width:100%;border:0;border-radius:14px;padding:13px 14px;background:#111;color:white;font-weight:700;margin:6px 0;cursor:pointer;font-size:15px}
+.btn2{background:white;color:#111;border:1px solid #ddd;border-radius:14px;padding:13px 14px;font-weight:700;cursor:pointer;font-size:15px;width:100%}
+.btn-check{background:#f59e0b;color:white}
+.btn-delivery{background:#10b981;color:white}
+
+/* Chips, tags */
+.chip{display:inline-block;background:#fff;border:1px solid #ddd;border-radius:20px;padding:8px 12px;margin:4px;font-weight:700;font-size:13px;cursor:pointer}
+.chip.active{background:#111;color:white;border-color:#111}
+.tag{display:inline-block;background:#eef2ff;border-radius:12px;padding:5px 8px;margin:4px 4px 4px 0;font-size:12px}
+.status-active{background:#ecfdf5;color:#047857;border-radius:12px;padding:4px 8px;font-size:11px;font-weight:700}
+.status-update{background:#fff1f2;color:#be123c;border-radius:12px;padding:4px 8px;font-size:11px;font-weight:700}
+
+/* Search */
+.search{width:100%;padding:14px;border:1px solid #ddd;border-radius:14px;font-size:16px;background:white;margin:10px 0}
+
+/* Row */
+.row{display:flex;justify-content:space-between;gap:12px;margin:7px 0;font-size:14px}
+.row b{font-weight:700}
+
+/* Price */
+.price{font-weight:800;color:#067a46;font-size:16px}
+
+/* Back link */
+.back{color:#0b63ce;font-weight:700;margin:8px 0;display:inline-block;cursor:pointer}
+
+/* Warning box */
+.warn{background:#fff8e1;border:1px solid #ffe08a;border-radius:14px;padding:10px;margin:10px 0;font-size:13px}
+
+/* Chat */
+.msg{padding:10px 12px;border-radius:14px;margin:8px 0;max-width:85%;font-size:14px}
+.me{background:#dbeafe;margin-left:auto}
+.them{background:#eee}
+.sys{background:#fff8e1;text-align:center;max-width:100%;font-size:12px}
+.chat-input-wrap{display:flex;gap:8px;margin-top:10px}
+.chat-input{flex:1;padding:12px;border:1px solid #ddd;border-radius:14px;font-size:15px}
+
+/* Grid for roles */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Dash cards */
+.dash .card{cursor:pointer}
+
+/* Fixed bottom navigation */
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;border-top:1px solid #e0e0e0;display:flex;justify-content:space-around;padding:8px 4px 12px;max-width:430px;margin:auto;z-index:1000}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#888;font-size:11px;min-width:60px}
+.nav-item.active{color:#111}
+.nav-icon{font-size:20px}
+
+/* Sticky action bar on product card */
+.sticky-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:80px;background:#f7f7f8;padding:10px 0;z-index:999}
+
+/* Dashboard list */
+.dash-item{border:1px solid #ddd;border-radius:14px;padding:12px;margin:6px 0;background:white;cursor:pointer}
+.dash-item b{display:block;font-size:15px}
+.dash-item s{color:#888;font-size:12px}
+
+/* Model card */
+.model-card{background:white;border:1px solid #e6e6e6;border-radius:16px;padding:14px;margin:8px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.model-card b{font-size:16px}
+.model-card s{color:#888;font-size:12px;display:block}
+.model-card .cat-badge{background:#fff1f2;color:#e11d48;font-size:11px;padding:3px 8px;border-radius:10px}
+
+/* Supplier card */
+.sup-card{background:white;border:1px solid #ddd;border-radius:16px;padding:14px;margin:8px 0}
+.sup-card b{font-size:16px;display:block}
+.sup-card s{color:#888;font-size:12px;display:block;margin:4px 0}
+
+/* Small text */
+.small{font-size:12px}
+.hidden{display:none}
+
+/* Role selector cards */
+.sel-card{background:white;border:1px solid #ddd;border-radius:16px;padding:14px;margin:6px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.sel-card.active{border-color:#111;background:#111;color:white}
+.sel-card b{font-size:15px}
+.sel-card s{color:#888;font-size:11px}
 </style>
 </head>
 <body>
@@ -13,193 +131,445 @@
 <script>
 const db={
 models:[
-{id:"lenovo-t14-g5",brand:"Lenovo",name:"ThinkPad T14 Gen 5",cat:"Corporate",spec:"Business laptop · 14 inch · Intel Core Ultra",range:"AED 1,850–2,550",count:3},
-{id:"dell-5440",brand:"Dell",name:"Latitude 5440",cat:"Corporate",spec:"Corporate laptop · 14 inch · i5/i7",range:"AED 1,350–1,750",count:2},
-{id:"panasonic-fz55",brand:"Panasonic",name:"Toughbook FZ-55",cat:"Rugged",spec:"Rugged laptop · semi-rugged · field use",range:"AED 2,400–3,200",count:2}
+{id:"lenovo-t14-g5",brand:"Lenovo",name:"ThinkPad T14 Gen 5",cat:"Corporate",spec:"Business laptop · 14 inch · Intel Core Ultra",range:"AED 1,850-2,550",count:3},
+{id:"dell-5440",brand:"Dell",name:"Latitude 5440",cat:"Corporate",spec:"Corporate laptop · 14 inch · i5/i7",range:"AED 1,350-1,750",count:2},
+{id:"panasonic-fz55",brand:"Panasonic",name:"Toughbook FZ-55",cat:"Rugged",spec:"Rugged laptop · semi-rugged · field use",range:"AED 2,400-3,200",count:2}
 ],
 configs:[
-{id:"t14-u5",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 5",ram:"16GB",ssd:"512GB",screen:"14 inch IPS",grade:"Grade A",range:"AED 1,850–2,150"},
-{id:"t14-u7",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 7",ram:"32GB",ssd:"1TB",screen:"14 inch IPS",grade:"Grade A",range:"AED 2,200–2,550"},
-{id:"dell-i5",model:"dell-5440",cpu:"Intel Core i5-1335U",ram:"16GB",ssd:"256GB",screen:"14 inch FHD",grade:"Grade B+",range:"AED 1,350–1,550"},
-{id:"dell-i7",model:"dell-5440",cpu:"Intel Core i7-1355U",ram:"16GB",ssd:"512GB",screen:"14 inch FHD",grade:"Grade A",range:"AED 1,600–1,750"},
-{id:"fz55-16",model:"panasonic-fz55",cpu:"Intel Core i7-10610U",ram:"16GB",ssd:"512GB",screen:"15.6 inch FHD",grade:"Grade A",range:"AED 2,400–2,800"},
-{id:"fz55-32",model:"panasonic-fz55",cpu:"Intel Core i7-10610U",ram:"32GB",ssd:"1TB",screen:"15.6 inch FHD",grade:"Grade A",range:"AED 2,900–3,200"}
+{id:"t14-u5",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 5",ram:"32GB",ssd:"1TB",screen:"14 inch IPS",grade:"A-",stock:"Available"},
+{id:"t14-u7",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 7",ram:"32GB",ssd:"1TB",screen:"14 inch IPS",grade:"A",stock:"Available"},
+{id:"t14-u7-64",model:"lenovo-t14-g5",cpu:"Intel Core Ultra 7",ram:"64GB",ssd:"2TB",screen:"14 inch IPS",grade:"A+",stock:"Limited"},
+{id:"dell-i5",model:"dell-5440",cpu:"Intel Core i5-1335U",ram:"16GB",ssd:"512GB",screen:"14 inch FHD",grade:"A-",stock:"Available"},
+{id:"dell-i7",model:"dell-5440",cpu:"Intel Core i7-1355U",ram:"16GB",ssd:"512GB",screen:"14 inch FHD",grade:"A",stock:"Available"},
+{id:"fz55-16",model:"panasonic-fz55",cpu:"Intel Core i5-10400H",ram:"16GB",ssd:"512GB",screen:"14 inch FHD",grade:"A-",stock:"Available"},
+{id:"fz55-32",model:"panasonic-fz55",cpu:"Intel Core i7-10875H",ram:"32GB",ssd:"1TB",screen:"14 inch FHD",grade:"A",stock:"Limited"}
 ],
 suppliers:[
-{id:"s1",name:"Al Noor Computers",area:"Industrial Area, Sharjah"},
-{id:"s2",name:"Gulf Tech Laptops",area:"Rolla, Sharjah"},
-{id:"s3",name:"Desert Devices",area:"Al Majaz, Sharjah"}
+{id:"s1",name:"Al Noor Computers",area:"Industrial Area",city:"Sharjah",phone:"+971 50 123 4567",rating:4.8,verified:true},
+{id:"s2",name:"Gulf Tech Laptops",area:"Rolla",city:"Sharjah",phone:"+971 52 987 6543",rating:4.6,verified:true},
+{id:"s3",name:"Desert Devices",area:"Al Majaz",city:"Sharjah",phone:"+971 55 456 7890",rating:4.7,verified:true}
 ],
 offers:[
-{id:"o1",config:"t14-u5",supplier:"s1",price:"AED 1,950",stock:"Active",condition:"Grade A",source:"Supplier updated"},
-{id:"o2",config:"t14-u5",supplier:"s2",price:"AED 1,880",stock:"Active",condition:"Grade B+",source:"Employee updated"},
-{id:"o3",config:"t14-u7",supplier:"s1",price:"AED 2,350",stock:"Active",condition:"Grade A",source:"Supplier updated"},
-{id:"o4",config:"dell-i5",supplier:"s2",price:"AED 1,450",stock:"Active",condition:"Grade B+",source:"Employee updated"},
-{id:"o5",config:"dell-i7",supplier:"s2",price:"AED 1,700",stock:"Needs update",condition:"Grade A",source:"Employee updated"},
-{id:"o6",config:"fz55-16",supplier:"s3",price:"AED 2,600",stock:"Active",condition:"Grade A",source:"Admin updated"},
-{id:"o7",config:"fz55-32",supplier:"s3",price:"AED 3,100",stock:"Active",condition:"Grade A",source:"Admin updated"}
+{id:"o1",config:"t14-u5",supplier:"s1",price:1850,currency:"AED",condition:"Original keyboard, minor scratches",status:"Active",source:"Import UAE"},
+{id:"o2",config:"t14-u5",supplier:"s2",price:1950,currency:"AED",condition:"Refurbished, new battery",status:"Active",source:"Local trade"},
+{id:"o3",config:"t14-u7",supplier:"s1",price:2150,currency:"AED",condition:"Like new, full spec",status:"Needs update",source:"Import KSA"},
+{id:"o4",config:"dell-i5",supplier:"s2",price:1350,currency:"AED",condition:"Good condition, tested",status:"Active",source:"Local trade"},
+{id:"o5",config:"dell-i7",supplier:"s3",price:1750,currency:"AED",condition:"Excellent, warranty till Oct 2026",status:"Active",source:"Import UAE"},
+{id:"o6",config:"fz55-16",supplier:"s1",price:2400,currency:"AED",condition:"Rugged, field used, tested",status:"Active",source:"Government surplus"},
+{id:"o7",config:"fz55-32",supplier:"s3",price:3200,currency:"AED",condition:"A-grade, full accessories",status:"Needs update",source:"Import Japan"}
 ]
 };
-let st={role:null,model:null,config:null,offer:null};
-const app=document.getElementById("app");
-const M=id=>db.models.find(x=>x.id===id), C=id=>db.configs.find(x=>x.id===id), O=id=>db.offers.find(x=>x.id===id), S=id=>db.suppliers.find(x=>x.id===id);
+const M=id=>db.models.find(x=>x.id===id);
+const C=id=>db.configs.find(x=>x.id===id);
+const O=id=>db.offers.find(x=>x.id===id);
+const S=id=>db.suppliers.find(x=>x.id===id);
+const ofC=cid=>db.offers.filter(o=>o.config===cid);
 
-function shell(title,body){app.innerHTML=`<div class="top"><div class="logo">SOSKA</div><button class="pill" onclick="entry()">Switch role</button></div>${body}`}
+let st={role:null,view:"entry",model:null,config:null,offer:null,lang:"ru",tab:0,fav:[],filter:"all"};
+const T={ru:"ru",en:"en",ar:"ar",ur:"ur"};
 
-function entry(){
-st={role:null,model:null,config:null,offer:null};
-app.innerHTML=`
-<div class="card">
-  <div class="logo">SOSKA</div>
-  <div class="sub">Sharjah laptop/electronics intermediary app</div>
+const render=html=>document.getElementById('app').innerHTML=html;
+
+const nav=[
+{id:"home",label:"Главная"},
+{id:"search",label:"Поиск"},
+{id:"fav",label:"Избранное"},
+{id:"chats",label:"Чаты"},
+{id:"profile",label:"Профиль"}
+];
+
+const buyerNav=()=>`
+<div class="bottom-nav">
+<nav class="bottom-nav">
+${nav.map((n,i)=>`<div class="nav-item ${st.tab===i?'active':''}" onclick="setTab(${i})">
+<span class="nav-icon">${["\u{1F3E0}","\u{1F50D}","\u{2665}","\u{1F4AC}","\u{1F464}"][i]}</span>
+<span>${n.label}</span>
+</div>`).join('')}
+</nav>
+</div>`;
+
+const setTab=t=>{st.tab=t;if(st.tab===1)drawSearch();if(st.tab===2)drawFav();if(st.tab===3)drawChats();if(st.tab===4)drawProfile();if(st.tab===0)buyerHome();};
+
+const entry=()=>{
+render(`
+<div class="entry-wrap">
+<div class="entry-logo">\u{1F4BB} SOSKA</div>
+<div class="entry-sub">\u{1F4CD} Sharjah · Used laptops</div>
+
+<div style="margin-bottom:16px;font-weight:700;font-size:14px;">\u{1F3AF} Выбери язык</div>
+<div class="lang-grid">
+<button class="lang-btn ${st.lang==='ru'?'active':''}" onclick="setLang('ru')">Русский</button>
+<button class="lang-btn ${st.lang==='en'?'active':''}" onclick="setLang('en')">English</button>
+<button class="lang-btn ${st.lang==='ar'?'active':''}" onclick="setLang('ar')">\u0627\u0644\u0639\u0631\u0628\u064A\u0629</button>
+<button class="lang-btn ${st.lang==='ur'?'active':''}" onclick="setLang('ur')">\u0627\u0631\u062F\u0648</button>
+</div>
+
+<div style="margin-bottom:16px;font-weight:700;font-size:14px;">\u{1F64B} Выбери роль</div>
+<div class="role-list">
+<div class="role buyer" onclick="goRole('Buyer')">
+<span style="font-size:24px">\u{1F3E0}</span>
+<div><b>Покупатель</b><s>Ищи и покупай ноутбуки</s></div>
+</div>
+<div class="role supplier" onclick="goRole('Supplier')">
+<span style="font-size:24px">\u{1F3ED}</span>
+<div><b>Поставщик</b><s>Управляй своими товарами</s></div>
+</div>
+<div class="role empl" onclick="goRole('Employee')">
+<span style="font-size:24px">\u{1F4CB}</span>
+<div><b>Сотрудник</b><s>Регистрируй поставщиков и обновляй данные</s></div>
+</div>
+<div class="role expert" onclick="goRole('Expert')">
+<span style="font-size:24px">\u{1F50D}</span>
+<div><b>Эксперт</b><s>Проверяй конкретный товар по заявке</s></div>
+</div>
+<div class="role cargo" onclick="goRole('Cargo')">
+<span style="font-size:24px">\u{1F69A}</span>
+<div><b>Карго</b><s>Забирай и доставляй заказы</s></div>
+</div>
+<div class="role admin" onclick="goRole('Admin')">
+<span style="font-size:24px">\u{1F511}</span>
+<div><b>Админ</b><s>Контролируй всё</s></div>
+</div>
+</div>
+
+<div class="warn-entry">
+\u{26A0} Сотрудник ≠ Эксперт. Сотрудник регистрирует поставщиков и обновляет данные. Эксперт проверяет только конкретный товар в конкретной сделке. Карго ≠ Поставщик. Карго только забирает и доставляет.
+</div>
+</div>
+`);
+};
+
+const setLang=l=>{st.lang=l;render(entry());};
+
+const goRole=r=>{
+st.role=r;st.view=r==="Buyer"?"home":"dash";
+st.tab=0;
+if(r==="Buyer")buyerHome();else dashboard(r);
+};
+
+const buyerHome=()=>{
+st.view="home";
+let body=`
+<div class="top">
+<div class="logo">\u{1F3E0} SOSKA</div>
+<a class="whatsapp-pill" href="https://wa.me/971" target="_blank">\u{1F4AC} WhatsApp</a>
 </div>
 <div class="card">
-  <b>Language</b>
-  <div><span class="chip">Russian</span><span class="chip">Urdu</span><span class="chip">Arabic</span><span class="chip">English</span></div>
+<div style="font-weight:700;font-size:14px;margin-bottom:8px;">\u{1F50D} Быстрый поиск</div>
+<input class="search" placeholder="\u{1F446} Введи название модели..." oninput="drawModels(this.value)" />
+</div>
+<div class="tab-bar">
+<div class="tab ${st.filter==='all'?'active':''}" onclick="setFilter('all')">Все</div>
+<div class="tab ${st.filter==='Corporate'?'active':''}" onclick="setFilter('Corporate')">Corporate</div>
+<div class="tab ${st.filter==='Rugged'?'active':''}" onclick="setFilter('Rugged')">Rugged</div>
+</div>
+<div id="model-list"></div>
+${buyerNav()}
+`;
+render(body);
+drawModels("");
+};
+
+const setFilter=f=>{st.filter=f;buyerHome();};
+
+const drawModels=q=>{
+const list=tf.getElementById("model-list");
+const q2=q.toLowerCase();
+const models=db.models.filter(m=>{
+if(st.filter!=="all"&&m.cat!==st.filter)return false;
+if(q2&&!m.name.toLowerCase().includes(q2))return false;
+return true;
+});
+list.innerHTML=models.map(m=>`
+<div class="model-card" onclick="configs('${m.id}')">
+<div>
+<b>${m.name}</b>
+<s>${m.spec}</s>
+<s><span class="tag">${m.cat}</span> ${m.count} предложения</s>
+</div>
+<div style="text-align:right">
+<div class="cat-badge">${m.cat}</div>
+<s style="display:block;margin-top:4px">${m.range}</s>
+</div>
+</div>
+`).join("`)" + `;` + `"`;
+};
+
+const tf={getElementById:id=>document.getElementById(id)};
+
+const drawSearch=()=>{
+st.view="search";
+render(`
+<div class="top"><div class="logo">\u{1F50D} ${"Поиск"}</div></div>
+<input class="search" placeholder="${"Введи модель..."}" oninput="drawModels(this.value)" />
+<div class="tab-bar">
+<div class="tab ${st.filter==='all'?'active':''}" onclick="setFilter('all')">Все</div>
+<div class="tab ${st.filter==='Corporate'?'active':''}" onclick="setFilter('Corporate')">Corporate</div>
+<div class="tab ${st.filter==='Rugged'?'active':''}" onclick="setFilter('Rugged')">Rugged</div>
+</div>
+<div id="model-list"></div>
+${buyerNav()}
+`);
+drawModels("");
+};
+
+const drawFav=()=>{
+st.view="fav";
+const favOffers=db.offers.filter(o=>st.fav.includes(o.id));
+render(`
+<div class="top"><div class="logo">\u{2665} ${"Избранное"}</div></div>
+${favOffers.length===0?`<div class="card"><div class="muted">Пока нет избранных товаров</div></div>`:favOffers.map(o=>`
+<div class="card" onclick="product('${o.id}')">
+<div style="font-weight:700">${M(C(o.config).model).name} - ${C(o.config).cpu}</div>
+<div class="row"><span class="muted">${S(o.supplier).name}</span><span class="price">${o.price} ${o.currency}</span></div>
+<div class="small muted">${o.condition}</div>
+</div>
+`).join("")}\n${buyerNav()}
+`);
+};
+
+const drawChats=()=>{
+st.view="chats";
+render(`
+<div class="top"><div class="logo">\u{1F4AC} ${"Чаты"}</div></div>
+<div class="card"><div class="muted">Чаты появятся после общения с продавцами</div></div>
+${buyerNav()}
+`);
+};
+
+const drawProfile=()=>{
+st.view="profile";
+render(`
+<div class="top"><div class="logo">\u{1F464} ${"Профиль"}</div></div>
+<div class="card">
+<div style="font-weight:700;font-size:18px;margin-bottom:8px;">${"Покупатель"}</div>
+<div class="muted">Уведомления включены</div>
+<div style="margin-top:12px">
+<button class="btn2" onclick="goToSelectRole()">${"Сменить роль"}</button>
+<button class="btn2" onclick="goToLang()">${"Сменить язык"}</button>
+<button class="btn2" onclick="goToEntry()">${"Выйти"}</button>
+</div>
 </div>
 <div class="card">
-  <b>Choose role</b>
-  <div class="grid">
-    ${roleBtn("Buyer","Search → model → config → seller")}
-    ${roleBtn("Supplier","Offers, stock, chats")}
-    ${roleBtn("Employee","Suppliers, stock, freshness")}
-    ${roleBtn("Admin","Users, moderation, disputes")}
-    ${roleBtn("Expert","Product inspection only")}
-    ${roleBtn("Cargo","Pickup and delivery")}
-  </div>
+<div style="font-weight:700;margin-bottom:8px;">${"Избранное"}</div>
+<div class="small muted">${st.fav.length} товаров</div>
 </div>
-<div class="warn">Employee ≠ Expert. AI translator works only inside chats. No trading, radar or terminal UI.</div>`;
-}
-function roleBtn(r,t){return `<button class="role" onclick="goRole('${r}')"><b>${r}</b><span class="small muted">${t}</span></button>`}
-function goRole(r){st.role=r;if(r==="Buyer")buyerHome();else dashboard(r)}
+${buyerNav()}
+`);
+};
 
-function buyerHome(){
-shell("Buyer",`
-<h1 class="title">Find model</h1>
-<input class="search" id="q" placeholder="Search model" oninput="drawModels()">
-<div><span class="chip">Laptops</span><span class="chip">Rugged</span><span class="chip">Corporate</span><span class="chip">Refurbished</span></div>
-<div id="models"></div>`);
-drawModels();
-}
-function drawModels(){
-let q=(document.getElementById("q")?.value||"").toLowerCase();
-let html=db.models.filter(m=>(m.brand+" "+m.name).toLowerCase().includes(q)).map(m=>`
-<div class="card">
-  <div class="card-title"><b>${m.brand} ${m.name}</b></div>
-  <div class="sub">${m.spec}</div>
-  <div class="row"><span>${m.count} seller offers</span><span class="price">${m.range}</span></div>
-  <button class="btn" onclick="configs('${m.id}')">View configurations</button>
-</div>`).join("");
-document.getElementById("models").innerHTML=html;
-}
-function configs(modelId){
-st.model=modelId;
-let m=M(modelId);
-let list=db.configs.filter(c=>c.model===modelId);
-shell("Configurations",`
-<span class="back" onclick="buyerHome()">← Back</span>
-<h1 class="title">${m.brand} ${m.name}</h1>
-<div class="sub">Choose exact configuration. Only this model is shown.</div>
-${list.map(c=>`
-<div class="card">
-  <b>${c.cpu} · ${c.ram} · ${c.ssd}</b>
-  <div><span class="tag">${c.screen}</span><span class="tag">${c.grade}</span></div>
-  <div class="row"><span>Price range</span><span class="price">${c.range}</span></div>
-  <button class="btn" onclick="offers('${c.id}')">Compare sellers</button>
-</div>`).join("")}`);
-}
-function offers(configId){
-st.config=configId;
-let c=C(configId), m=M(c.model), list=db.offers.filter(o=>o.config===configId);
-shell("Seller offers",`
-<span class="back" onclick="configs('${m.id}')">← Back</span>
-<h1 class="title">${m.brand} ${m.name}</h1>
-<div class="sub">${c.cpu} · ${c.ram} · ${c.ssd}</div>
-${list.map(o=>{let s=S(o.supplier);return `
-<div class="card">
-  <b>${s.name}</b>
-  <div class="sub">${s.area}</div>
-  <div class="row"><span>Price</span><span class="price">${o.price}</span></div>
-  <div class="row"><span>Stock</span><b>${o.stock}</b></div>
-  <div class="row"><span>Condition</span><b>${o.condition}</b></div>
-  <div class="small muted">${o.source}</div>
-  <button class="btn" onclick="product('${o.id}')">Open product</button>
-  <button class="btn btn2" onclick="chat('${o.id}')">Chat</button>
-  <button class="btn btn2" onclick="check('${o.id}')">Request check</button>
-  <button class="btn btn2" onclick="delivery('${o.id}')">Request delivery</button>
-</div>`}).join("")}`);
-}
-function product(offerId){
-st.offer=offerId;let o=O(offerId), c=C(o.config), m=M(c.model), s=S(o.supplier);
-shell("Product",`
-<span class="back" onclick="offers('${c.id}')">← Back</span>
-<h1 class="title">${m.brand} ${m.name}</h1>
-<div class="card">
-  <div class="sub">${c.cpu} · ${c.ram} · ${c.ssd} · ${c.screen}</div>
-  <div class="row"><span>Seller</span><b>${s.name}</b></div>
-  <div class="row"><span>Location</span><b>${s.area}</b></div>
-  <div class="row"><span>Price</span><span class="price">${o.price}</span></div>
-  <div class="row"><span>Stock</span><b>${o.stock}</b></div>
-  <div class="row"><span>Condition</span><b>${o.condition}</b></div>
-  <button class="btn" onclick="chat('${o.id}')">Chat</button>
-  <button class="btn btn2" onclick="check('${o.id}')">Request Check</button>
-  <button class="btn btn2" onclick="delivery('${o.id}')">Request Delivery</button>
-  <button class="btn btn2" onclick="window.open('https://maps.google.com?q=${encodeURIComponent(s.area)}')">Open Google Maps</button>
-</div>`);
-}
-function chat(offerId){let o=O(offerId), c=C(o.config);shell("Chat",`
-<span class="back" onclick="product('${offerId}')">← Back</span>
-<h1 class="title">Chat inside SOSKA</h1>
-<div class="card">
-  <div class="msg me">Is this exact configuration available?</div>
-  <div class="msg them">Yes, available today in Sharjah.</div>
-  <div class="msg sys">AI translation placeholder: translation works only inside chat messages.</div>
+const goToEntry=()=>{st.role=null;entry();};
+const goToSelectRole=()=>{st.role=null;entry();};
+const goToLang=()=>{st.role=null;entry();};
+
+const configs=mid=>{
+st.model=mid;
+st.config=null;
+st.offer=null;
+const m=M(mid);
+const confs=db.configs.filter(c=>c.model===mid);
+render(`
+<div class="top">
+<span class="back" onclick="buyerHome()">⬅ Назад</span>
+<span class="pill">${m.name}</span>
 </div>
-<button class="btn" onclick="check('${offerId}')">Request Check</button>
-<button class="btn btn2" onclick="delivery('${offerId}')">Request Delivery</button>`)}
+<div style="font-weight:700;font-size:18px;margin-bottom:12px;">Конфигурации ${m.name}</div>
+${confs.map(c=>`
+<div class="card clickable" onclick="offers('${c.id}')">
+<div style="font-weight:700">${c.cpu}</div>
+<div class="row"><span class="muted">RAM</span><b>${c.ram}</b></div>
+<div class="row"><span class="muted">SSD</span><b>${c.ssd}</b></div>
+<div class="row"><span class="muted">Screen</span><b>${c.screen}</b></div>
+<div class="row"><span class="muted">Grade</span><span class="tag">${c.grade}</span></div>
+<div style="margin-top:8px"><span class="${c.stock==='Available'?'status-active':'status-update'}">${c.stock}</span></div>
+</div>
+`).join("")}
+<div style="height:60px"></div>
+`);
+};
 
-function check(offerId){let o=O(offerId), c=C(o.config), m=M(c.model);shell("Check",`
-<span class="back" onclick="product('${offerId}')">← Back</span>
-<h1 class="title">Request product check</h1>
+const offers=cid=>{
+st.config=cid;
+st.offer=null;
+const c=C(cid);
+const m=M(c.model);
+const offersList=ofC(cid);
+render(`
+<div class="top">
+<span class="back" onclick="configs('${c.model}')">⬅ Назад</span>
+<span class="pill">${c.cpu} · ${c.ram} · ${c.ssd}</span>
+</div>
+<div style="font-weight:700;font-size:18px;margin-bottom:12px;">Предложения · ${m.name}</div>
+${offersList.map(o=>`
+<div class="card clickable" onclick="product('${o.id}')">
+<div class="row">
+<span style="font-weight:700">${S(o.supplier).name}</span>
+<span class="price">${o.price} ${o.currency}</span>
+</div>
+<div class="small muted">${o.condition}</div>
+<div style="margin-top:6px"><span class="${o.status==='Active'?'status-active':'status-update'}">${o.status}</span></div>
+</div>
+`).join("")}
+<div style="height:60px"></div>
+`);
+};
+
+const product=oid=>{
+st.offer=oid;
+const o=O(oid);
+const c=C(o.config);
+const m=M(c.model);
+const s=S(o.supplier);
+render(`
+<div class="top">
+<span class="back" onclick="offers('${o.config}')">⬅ Назад</span>
+<span class="pill">${m.name}</span>
+</div>
 <div class="card">
-  <b>${m.brand} ${m.name}</b><div class="sub">${c.cpu} · ${c.ram} · ${c.ssd}</div>
-  <div class="row"><span>Status</span><b>Requested</b></div>
-  <div class="row"><span>Expert</span><b>To be assigned</b></div>
-  <div class="warn">Expert checks product condition. Employee does not replace Expert.</div>
-  <button class="btn">Create check request</button>
-</div>`)}
-
-function delivery(offerId){let o=O(offerId), s=S(o.supplier);shell("Delivery",`
-<span class="back" onclick="product('${offerId}')">← Back</span>
-<h1 class="title">Request delivery</h1>
+<div style="font-weight:800;font-size:22px">${m.name}</div>
+<div class="sub">${c.cpu} · ${c.ram} · ${c.ssd} · ${c.screen}</div>
+<div class="row"><span class="muted">Condition</span><span>${o.condition}</span></div>
+<div class="row"><span class="muted">Status</span><span class="${o.status==='Active'?'status-active':'status-update'}">${o.status}</span></div>
+<div class="row"><span class="muted">Source</span><span>${o.source}</span></div>
+<div style="margin:12px 0"><div style="font-size:24px;font-weight:900;color:#067a46">${o.price} ${o.currency}</div></div>
+</div>
 <div class="card">
-  <div class="row"><span>Pickup</span><b>${s.area}</b></div>
-  <div class="row"><span>Status</span><b>Requested</b></div>
-  <button class="btn" onclick="window.open('https://maps.google.com?q=${encodeURIComponent(s.area)}')">Open route in Google Maps</button>
-  <button class="btn btn2">Create delivery request</button>
-</div>`)}
+<div style="font-weight:700;font-size:16px;margin-bottom:8px;">${s.name}</div>
+<div class="small muted">${s.area} · ${s.city}</div>
+<div class="small muted">\u{1F4DE} ${s.phone}</div>
+<div class="small muted">\u{2B50} ${s.rating} ${s.verified?"· Verified":""}</div>
+<div style="margin-top:10px">
+<a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name+" "+s.city)}" target="_blank">\u{1F5FA} Открыть в Google Maps</a>
+</div>
+</div>
+<div style="height:10px"></div>
+<div class="sticky-actions">
+<button class="btn" onclick="chat('${o.id}')">\u{1F4AC} Чат</button>
+<button class="btn btn-check" onclick="check('${o.id}')">\u{1F50D} Проверка</button>
+<button class="btn btn-delivery" onclick="delivery('${o.id}')">\u{1F69A} Доставка</button>
+<button class="btn2" onclick="toggleFav('${o.id}')">${st.fav.includes(o.id)?"\u{2665} В избранном":"\u{2661} В избранное"}</button>
+</div>
+<div style="height:80px"></div>
+${buyerNav()}
+`);
+};
 
-function dashboard(role){
-let content={
-Supplier:["Products","Add / edit offer","Requests / chats","Stock update","Profile"],
-Employee:["Supplier registration","Supplier list","Supplier detail","Stock entry","Data freshness","Employee notes"],
-Expert:["Check request detail","Inspection checklist","Upload check result","Expert chat"],
-Cargo:["Delivery detail","Cargo chat","Status update","Open Google Maps route"],
-Admin:["User management","Supplier management","Model library","Offers moderation","Chats monitoring","Checks management","Delivery management","Disputes / issues"]
-}[role]||[];
-let notes={
-Supplier:"Supplier manages own offers and stock.",
-Employee:"Employee manages suppliers, stock and freshness. Employee is NOT Expert.",
-Expert:"Expert checks one specific product in one specific deal.",
-Cargo:"Cargo handles delivery only. No stock edits. No inspections.",
-Admin:"Admin controls users, moderation, assignments and disputes."
+const toggleFav=oid=>{
+if(st.fav.includes(oid))st.fav=st.fav.filter(x=>x!==oid);
+else st.fav.push(oid);
+product(oid);
+};
+
+const chat=oid=>{
+st.view="chat";
+const o=O(oid);
+render(`
+<div class="top">
+<span class="back" onclick="product('${oid}')">⬅ Назад</span>
+<span class="pill">${M(C(o.config).model).name}</span>
+</div>
+<div class="card"><div class="sys">${new Date().toLocaleDateString()}{" · Чат с продавцом"}</div></div>
+<div class="msg them">Здравствуйте! Интересует ${M(C(o.config).model).name} с конфигурацией ${C(o.config).cpu}. Есть ли он в наличии?</div>
+<div class="msg me">Да, в наличии. Цена ${o.price} ${o.currency}. Можем организовать проверку перед покупкой.</div>
+<div class="chat-input-wrap">
+<input class="chat-input" id="msg-input" placeholder="Напишите сообщение..." />
+<button class="btn" style="width:auto" onclick="sendMsg()">➤</button>
+</div>
+<div style="height:60px"></div>
+${buyerNav()}
+`);
+const i=document.getElementById("msg-input");if(i)i.focus();
+};
+
+const sendMsg=()=>{
+const inp=document.getElementById("msg-input");
+if(inp&&inp.value.trim()){
+console.log("Sent:",inp.value);
+inp.value="";
+}
+};
+
+const check=oid=>{
+st.view="check";
+render(`
+<div class="top">
+<span class="back" onclick="product('${oid}')">⬅ Назад</span>
+<span class="pill">${"Заявка на проверку"}</span>
+</div>
+<div class="card">
+<div class="title">${"Запрос на проверку"}</div>
+<div class="sub">${"Эксперт проверит конкретный товар и составит отчёт"}</div>
+<div class="warn">${"Проверка включает: внешний вид, клавиатура, экран, тесты CPU/RAM/SSD,电池"}</div>
+<div class="row"><span class="muted">${"Стоимость"}</span><b>200 AED</b></div>
+<div class="row"><span class="muted">${"Время"}</span><b>1-2 дня</b></div>
+<div style="margin-top:12px">
+<button class="btn" onclick="alert('${"Заявка на проверку создана! Эксперт свяжется с вами."}')">${"Отправить заявку"}</button>
+<button class="btn2" onclick="product('${oid}')">${"Назад"}</button>
+</div>
+</div>
+<div style="height:60px"></div>
+${buyerNav()}
+`);
+};
+
+const delivery=oid=>{
+st.view="delivery";
+const o=O(oid);
+const s=S(o.supplier);
+render(`
+<div class="top">
+<span class="back" onclick="product('${oid}')">⬅ Назад</span>
+<span class="pill">${"Заявка на доставку"}</span>
+</div>
+<div class="card">
+<div class="title">${"Запрос на доставку"}</div>
+<div class="sub">${"Карго заберёт товар и доставит по адресу"}</div>
+<div class="row"><span>Забрать от:</span><b>${s.area}, ${s.city}</b></div>
+<div class="row"><span>${"Статус"}</span><span class="status-update">Requested</span></div>
+<div class="row"><span>${"Маршрут"}</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.city)}" target="_blank" class="back">${"Открыть в Google Maps"}</a></div>
+<div style="margin-top:12px">
+<button class="btn" onclick="alert('${"Заявка на доставку создана! Карго свяжется с вами."}')">${"Отправить заявку"}</button>
+<button class="btn2" onclick="product('${oid}')">${"Назад"}</button>
+</div>
+</div>
+<div style="height:60px"></div>
+${buyerNav()}
+`);
+};
+
+const dashboard=role=>{
+st.view="dash";
+const content={
+Supplier:["Товары","Добавить / изменить","Заявки / чаты","Обновление склада","Профиль"],
+Employee:["Поставщики","Список поставщиков","Детали поставщика","Ввод данных","Актуальность данных","Заметки сотрудника"],
+Expert:["Детали заявки на проверку","Чек-лист инспекции","Загрузка результата проверки","Чат эксперта"],
+Cargo:["Детали доставки","Чат карго","Обновление статуса","Открыть маршрут Google Maps"],
+Admin:["Управление пользователями","Управление поставщиками","Библиотека моделей","Модерация предложений","Мониторинг чатов","Управление проверками","Управление доставкой","Споры / проблемы"]
+};
+const notes={
+Supplier:"Поставщик управляет своими товарами и складом.",
+Employee:"Сотрудник регистрирует поставщиков, управляет складом и проверяет актуальность данных. Сотрудник ≠ Эксперт.",
+Expert:"Эксперт проверяет только конкретный товар в конкретной сделке.",
+Cargo:"Карго только забирает и доставляет. Не редактирует склад. Не проводит проверки.",
+Admin:"Админ контролирует пользователей, модерацию, проверки и споры."
 }[role];
-shell(role,`
-<span class="back" onclick="entry()">← Back to roles</span>
-<h1 class="title">${role} dashboard</h1>
-<div class="warn">${notes}</div>
-<div class="dash">${content.map(x=>`<div class="card"><b>${x}</b><div class="sub">Mock screen placeholder</div></div>`).join("")}</div>`);
-}
+
+render(`
+<div style="margin:8px 0"></div>
+<span class="back" onclick="goToEntry()">⬅ Выбрать роль</span>
+<div class="title">${"Дашборд "+role}</div>
+<div class="warn">${notes || ""}</div>
+<div class="dash">
+${(content[role]||[]).map(x=>`
+<div class="dash-item">
+<b>${x}</b>
+<s>Mock screen placeholder</s>
+</div>
+`).join("")}
+</div>
+`);
+};
+
 entry();
 </script>
 </body>
