@@ -3,518 +3,817 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JNPRADAR — dealcore.me</title>
+  <title>JNPRADAR — Поиск офферов</title>
   <style>
     :root {
       --bg: #f4f6f8;
-      --surface: #fff;
-      --line: #dbe2ea;
-      --text: #1f2937;
+      --card: #fff;
+      --line: #dde3ea;
+      --text: #1c1f23;
       --muted: #6b7280;
-      --brand: #1d4ed8;
-      --brand-soft: #e8efff;
+      --primary: #1f5eff;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: var(--bg);
+      color: var(--text);
     }
-    .site-header {
-      background: #fff;
-      border-bottom: 1px solid var(--line);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .header-inner, .container {
-      width: min(1180px, 92vw);
+
+    .app {
+      max-width: 760px;
       margin: 0 auto;
+      min-height: 100vh;
+      padding: 16px;
     }
-    .header-inner {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .brand {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .muted { color: var(--muted); }
 
-    .container { padding: 28px 0 42px; }
-    .panel {
-      background: var(--surface);
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+
+    .card {
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 14px;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
-    .hero h1 { margin: 0 0 8px; font-size: 34px; }
-    .hero p { margin: 0 0 14px; color: var(--muted); }
 
-    input, button { font: inherit; }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input, button, select { font: inherit; }
+
     .search-input, .chat-input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 13px;
-      font-size: 16px;
+      padding: 12px;
     }
 
-    .offers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 12px;
-    }
-    .offer-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #fff;
-      padding: 13px;
-      text-align: left;
-      cursor: pointer;
-    }
-    .offer-model {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .meta {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .btn, .btn-secondary {
+    .toggle-btn, .send-btn, .action-btn, .back-btn {
       border: 0;
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       cursor: pointer;
     }
-    .btn { background: var(--brand); color: #fff; }
-    .btn-secondary { background: #eef2f7; color: var(--text); }
 
-    .offer-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px 18px;
+    .toggle-btn, .back-btn {
+      background: #eef2f7;
+      color: var(--text);
     }
-    .label { font-size: 12px; color: var(--muted); }
-    .chat-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-    .chat-box {
-      max-height: 350px;
-      overflow: auto;
+
+    .send-btn, .action-btn {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .offers-wrap {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .offer-btn {
+      min-width: 220px;
+      text-align: left;
+      background: #fff;
       border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #f8fbff;
+      border-radius: 14px;
       padding: 10px;
+      cursor: pointer;
     }
+
+    .offer-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .chat-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .chat-box {
+      max-height: 320px;
+      overflow: auto;
+      padding: 8px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
     .msg {
-      max-width: 84%;
-      border-radius: 12px;
-      padding: 10px;
+      max-width: 86%;
       margin: 8px 0;
+      padding: 10px;
+      border-radius: 12px;
     }
+
     .msg-buyer {
       margin-left: auto;
-      background: var(--brand-soft);
+      background: #e7f0ff;
     }
+
     .msg-supplier {
       margin-right: auto;
       background: #fff;
       border: 1px solid var(--line);
     }
-    .translated {
-      font-size: 12px;
+
+    .msg-meta {
+      font-size: 11px;
       color: var(--muted);
       margin-top: 6px;
-      border-top: 1px dashed #d5ddeb;
-      padding-top: 6px;
     }
-    .chat-row {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-    }
+
     .actions-row {
-      margin-top: 10px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
+      margin-top: 10px;
     }
-    .empty { color: var(--muted); }
 
-    @media (max-width: 900px) {
-      .hero h1 { font-size: 28px; }
-      .offer-grid { grid-template-columns: 1fr; }
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
     }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="brand">JNPRADAR</div>
-      <div class="muted">Покупатель: Demo Buyer</div>
-    </div>
-  </header>
 
-  <main id="app" class="container"></main>
+<body>
+  <main id="app" class="app"></main>
 
   <script>
+    window.__SUPABASE_URL__ = "https://wafrjwwkdpokzfbpjgoo.supabase.co";
+    window.__SUPABASE_ANON_KEY__ = "sb_publishable_z3MHuEU2oc6B_BcSm4rDsg_mqZeJ4Cn";
+
     // DATA LAYER
-    const dataStore = {
+    const db = {
+      buyers: [{ id: null, name: "Demo Buyer" }],
       suppliers: [],
-      buyers: [],
       offers: [],
+      inquiries: [],
       chats: [],
       messages: []
     };
 
     const state = {
-      buyerId: 'buyer-1',
-      query: '',
-      selectedOfferId: null
+      mode: "buyer",
+      buyerId: null,
+      query: "",
+      selectedOfferId: null,
+      selectedSupplierChatId: null,
+      dataSource: "fallback"
     };
 
-    const supabaseConfig = {
-      url: window.__SUPABASE_URL__ || '',
-      anonKey: window.__SUPABASE_ANON_KEY__ || ''
-    };
+    const modelPool = [
+      "Dell Latitude 7430",
+      "HP EliteBook 840 G9",
+      "Lenovo ThinkPad T14 Gen 3",
+      "MacBook Pro 14 M1",
+      "ASUS ZenBook 14",
+      "Acer Swift 5",
+      "Dell XPS 13",
+      "HP ProBook 450 G9",
+      "Lenovo Yoga 7",
+      "MacBook Air M2"
+    ];
 
-    function seedFallbackData() {
-      dataStore.buyers = [
-        {
-          id: 'buyer-1',
-          name: 'Demo Buyer',
-          language: 'ru',
-          role: 'buyer',
-          created_at: new Date().toISOString()
-        }
-      ];
+    function hasSupabase() {
+      return Boolean(window.__SUPABASE_URL__ && window.__SUPABASE_ANON_KEY__);
+    }
 
-      dataStore.suppliers = [
-        { id: 'sup-1', name: 'TechBridge LLC', language: 'en', status: 'active', created_at: new Date().toISOString() },
-        { id: 'sup-2', name: 'NoteLine FZE', language: 'en', status: 'active', created_at: new Date().toISOString() },
-        { id: 'sup-3', name: 'Gulf Devices Trading', language: 'ar', status: 'active', created_at: new Date().toISOString() }
-      ];
-
-      const modelPool = [
-        'Dell Latitude 7430',
-        'HP EliteBook 840 G9',
-        'Lenovo ThinkPad T14 Gen 3',
-        'MacBook Pro 14 M1',
-        'ASUS ZenBook 14',
-        'Acer Swift 5',
-        'Dell XPS 13',
-        'HP ProBook 450 G9',
-        'Lenovo Yoga 7',
-        'MacBook Air M2'
-      ];
-
-      let offerIndex = 1;
-
-      dataStore.suppliers.forEach((supplier, supplierIndex) => {
-        for (let i = 0; i < 10; i++) {
-          dataStore.offers.push({
-            id: `offer-${offerIndex++}`,
-            supplier_id: supplier.id,
-            model: modelPool[i],
-            configuration: `${16 + (i % 3) * 8}GB RAM / ${256 + (i % 4) * 256}GB SSD`,
-            price: 2800 + supplierIndex * 240 + i * 60,
-            currency: 'AED',
-            quantity: 2 + (i % 6),
-            description: `Краткое описание: ${modelPool[i]} в наличии, быстрая отгрузка и проверка перед сделкой.`,
-            status: 'active',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-        }
-      });
+    function sbHeaders() {
+      return {
+        apikey: window.__SUPABASE_ANON_KEY__,
+        Authorization: `Bearer ${window.__SUPABASE_ANON_KEY__}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
+      };
     }
 
     // SERVICE LAYER
+    function makeConfigurationFromRow(cfg) {
+      if (!cfg) return "N/A";
+      const parts = [cfg.cpu, cfg.ram, cfg.ssd, cfg.screen, cfg.form_factor, cfg.notes].filter(Boolean);
+      return parts.length ? parts.join(" / ") : "N/A";
+    }
+
     async function loadDataFromSupabase() {
-      if (!supabaseConfig.url || !supabaseConfig.anonKey) return false;
+      if (!hasSupabase()) return false;
 
       try {
-        const headers = {
-          apikey: supabaseConfig.anonKey,
-          Authorization: `Bearer ${supabaseConfig.anonKey}`
-        };
+        const query = [
+          "id",
+          "supplier_id",
+          "configuration_id",
+          "price_aed",
+          "qty_text",
+          "stock_status",
+          "condition",
+          "grade",
+          "created_at",
+          "updated_at",
+          "suppliers(id,name,language,status)",
+          "model_configurations(id,cpu,ram,ssd,screen,form_factor,notes,models(id,brand,model_name))"
+        ].join(",");
 
-        const [suppliersRes, offersRes] = await Promise.all([
-          fetch(`${supabaseConfig.url}/rest/v1/suppliers?select=id,name,language,status,created_at&status=eq.active`, { headers }),
-          fetch(`${supabaseConfig.url}/rest/v1/offers?select=id,supplier_id,model,configuration,price,currency,quantity,description,status,created_at,updated_at&status=eq.active`, { headers })
-        ]);
+        const res = await fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/offers?select=${encodeURIComponent(query)}&stock_status=in.(active,needs_update)`,
+          { headers: sbHeaders() }
+        );
 
-        if (!suppliersRes.ok || !offersRes.ok) return false;
+        if (!res.ok) return false;
 
-        dataStore.suppliers = await suppliersRes.json();
-        dataStore.offers = await offersRes.json();
+        const rows = await res.json();
+        const supplierMap = new Map();
 
-        dataStore.buyers = [
-          {
-            id: state.buyerId,
-            name: 'Demo Buyer',
-            language: 'ru',
-            role: 'buyer',
-            created_at: new Date().toISOString()
-          }
-        ];
+        db.offers = rows.map((row) => {
+          const sup = row.suppliers || {};
+          if (sup.id) supplierMap.set(sup.id, sup);
 
+          const cfg = row.model_configurations || {};
+          const mdl = cfg.models || {};
+          const modelName = [mdl.brand, mdl.model_name].filter(Boolean).join(" ").trim() || "Unknown model";
+
+          return {
+            id: row.id,
+            supplier_id: row.supplier_id,
+            configuration_id: row.configuration_id,
+            model: modelName,
+            configuration: makeConfigurationFromRow(cfg),
+            price: row.price_aed ?? 0,
+            currency: "AED",
+            quantity: row.qty_text || "N/A",
+            description: [row.condition, row.grade, row.stock_status].filter(Boolean).join(" · ") || "Без описания",
+            stock_status: row.stock_status || "active",
+            created_at: row.created_at,
+            updated_at: row.updated_at
+          };
+        });
+
+        db.suppliers = Array.from(supplierMap.values()).map((s) => ({
+          id: s.id,
+          name: s.name || "Unknown supplier",
+          language: s.language || "en",
+          status: s.status || "active"
+        }));
+
+        state.dataSource = "supabase";
         return true;
       } catch {
         return false;
       }
     }
 
-    function searchOffers(query) {
-      const q = query.trim().toLowerCase();
-      if (!q) return [];
+    function seedDataFallback() {
+      db.suppliers = [
+        { id: "sup-1", name: "TechBridge LLC", language: "en", status: "active" },
+        { id: "sup-2", name: "NoteLine FZE", language: "en", status: "active" },
+        { id: "sup-3", name: "Gulf Devices Trading", language: "ar", status: "active" }
+      ];
 
-      return dataStore.offers.filter(o =>
-        (o.model || '').toLowerCase().includes(q)
-      );
+      db.offers = [];
+      let offerIndex = 1;
+
+      db.suppliers.forEach((supplier, supIdx) => {
+        for (let i = 0; i < 10; i++) {
+          const model = modelPool[i % modelPool.length];
+
+          db.offers.push({
+            id: `offer-${offerIndex++}`,
+            supplier_id: supplier.id,
+            configuration_id: `cfg-${supplier.id}-${i}`,
+            model,
+            configuration: `${16 + (i % 3) * 8}GB RAM / ${256 + (i % 4) * 256}GB SSD`,
+            price: 2800 + supIdx * 250 + i * 55,
+            currency: "AED",
+            quantity: `${2 + (i % 6)} шт.`,
+            description: "used · A grade · active",
+            stock_status: "active",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+        }
+      });
+
+      const firstOffer = db.offers[0];
+      const inquiry = getOrCreateInquiryFallback(firstOffer);
+      const thread = getOrCreateThreadFallback(inquiry, firstOffer);
+
+      sendMessageFallback({
+        thread,
+        inquiry,
+        senderType: "supplier",
+        senderDisplayName: getSupplierName(firstOffer.supplier_id),
+        originalText: "Здравствуйте! Товар в наличии.",
+        originalLanguage: "ru"
+      });
     }
 
-    function getOfferById(offerId) {
-      return dataStore.offers.find(o => o.id === offerId);
+    function mockTranslate(text) {
+      return `[AI translation] ${text}`;
     }
 
-    function getOrCreateChat(offerId, supplierId, buyerId) {
-      let chat = dataStore.chats.find(c =>
-        c.offer_id === offerId &&
-        c.supplier_id === supplierId &&
-        c.buyer_id === buyerId
+    async function getOrCreateInquiry(offer) {
+      if (!hasSupabase()) return getOrCreateInquiryFallback(offer);
+
+      const existingRes = await fetch(
+        `${window.__SUPABASE_URL__}/rest/v1/inquiries?select=*&offer_id=eq.${encodeURIComponent(offer.id)}&limit=1`,
+        { headers: sbHeaders() }
       );
 
-      if (!chat) {
-        chat = {
-          id: `thread-${offerId}-${buyerId}`,
-          buyer_id: buyerId,
-          supplier_id: supplierId,
-          offer_id: offerId,
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+      const existing = existingRes.ok ? await existingRes.json() : [];
+      if (existing.length) return existing[0];
+
+      const payload = {
+        offer_id: offer.id,
+        supplier_id: offer.supplier_id,
+        buyer_id: null,
+        status: "active"
+      };
+
+      const createRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/inquiries`, {
+        method: "POST",
+        headers: sbHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      if (!createRes.ok) throw new Error("inquiry create failed");
+      return (await createRes.json())[0];
+    }
+
+    function getOrCreateInquiryFallback(offer) {
+      let inquiry = db.inquiries.find((i) => i.offer_id === offer.id);
+
+      if (!inquiry) {
+        inquiry = {
+          id: `inq-${offer.id}`,
+          offer_id: offer.id,
+          supplier_id: offer.supplier_id,
+          buyer_id: null,
+          status: "active",
+          created_at: new Date().toISOString()
         };
 
-        dataStore.chats.push(chat);
+        db.inquiries.push(inquiry);
       }
 
-      return chat;
+      return inquiry;
     }
 
-    function translateMessage(originalText) {
-      return {
-        translatedText: `[AI translation] ${originalText}`,
-        translationStatus: 'translated'
+    async function getOrCreateChatThread(inquiry, offer) {
+      if (!hasSupabase()) return getOrCreateThreadFallback(inquiry, offer);
+
+      const existingRes = await fetch(
+        `${window.__SUPABASE_URL__}/rest/v1/chat_threads?select=*&inquiry_id=eq.${encodeURIComponent(inquiry.id)}&limit=1`,
+        { headers: sbHeaders() }
+      );
+
+      const existing = existingRes.ok ? await existingRes.json() : [];
+      if (existing.length) return existing[0];
+
+      const payload = {
+        inquiry_id: inquiry.id,
+        offer_id: offer.id,
+        buyer_id: null,
+        supplier_id: offer.supplier_id,
+        thread_status: "active",
+        buyer_language: "ru",
+        supplier_language: "en",
+        translation_status: "enabled"
       };
+
+      const createRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/chat_threads`, {
+        method: "POST",
+        headers: sbHeaders(),
+        body: JSON.stringify(payload)
+      });
+
+      if (!createRes.ok) throw new Error("thread create failed");
+      return (await createRes.json())[0];
     }
 
-    function sendMessage({ threadId, offerId, supplierId, buyerId, senderRole, originalText, originalLanguage }) {
-      const tr = translateMessage(originalText);
+    function getOrCreateThreadFallback(inquiry, offer) {
+      let thread = db.chats.find((c) => c.inquiry_id === inquiry.id);
 
-      const message = {
+      if (!thread) {
+        thread = {
+          id: `thread-${inquiry.id}`,
+          inquiry_id: inquiry.id,
+          offer_id: offer.id,
+          buyer_id: null,
+          supplier_id: offer.supplier_id,
+          thread_status: "active",
+          buyer_language: "ru",
+          supplier_language: "en",
+          translation_status: "enabled",
+          created_at: new Date().toISOString()
+        };
+
+        db.chats.push(thread);
+      }
+
+      return thread;
+    }
+
+    async function sendMessage({ thread, inquiry, senderType, senderDisplayName, originalText, originalLanguage }) {
+      if (!hasSupabase()) {
+        return sendMessageFallback({ thread, inquiry, senderType, senderDisplayName, originalText, originalLanguage });
+      }
+
+      const msgPayload = {
+        thread_id: thread.id,
+        inquiry_id: inquiry.id,
+        sender_type: senderType,
+        sender_display_name: senderDisplayName,
+        original_text: originalText,
+        original_language: originalLanguage,
+        message_status: "sent"
+      };
+
+      const msgRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/chat_messages`, {
+        method: "POST",
+        headers: sbHeaders(),
+        body: JSON.stringify(msgPayload)
+      });
+
+      if (!msgRes.ok) throw new Error("chat_messages insert failed");
+      const msgRow = (await msgRes.json())[0];
+
+      const trPayload = {
+        message_id: msgRow.id,
+        thread_id: thread.id,
+        language_from: originalLanguage,
+        language_to: "en",
+        translated_text: mockTranslate(originalText),
+        translation_status: "translated",
+        provider: "mock"
+      };
+
+      const trRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/message_translations`, {
+        method: "POST",
+        headers: sbHeaders(),
+        body: JSON.stringify(trPayload)
+      });
+
+      if (!trRes.ok) throw new Error("message_translations insert failed");
+      return msgRow;
+    }
+
+    function sendMessageFallback({ thread, inquiry, senderType, senderDisplayName, originalText, originalLanguage }) {
+      const msg = {
         id: `msg-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
-        thread_id: threadId,
-        chatId: threadId,
-        offerId,
-        supplierId,
-        buyerId,
-        senderRole,
-        originalText,
-        originalLanguage,
-        translatedText: tr.translatedText,
-        translatedLanguage: 'en',
-        translationStatus: tr.translationStatus,
-        createdAt: new Date().toISOString()
+        thread_id: thread.id,
+        inquiry_id: inquiry.id,
+        sender_type: senderType,
+        sender_display_name: senderDisplayName,
+        original_text: originalText,
+        original_language: originalLanguage,
+        message_status: "sent",
+        translated_text: mockTranslate(originalText),
+        translated_language: "en",
+        translation_status: "translated",
+        provider: "mock",
+        created_at: new Date().toISOString()
       };
 
-      dataStore.messages.push(message);
-      return message;
+      db.messages.push(msg);
+      return msg;
+    }
+
+    async function loadThreadMessages(threadId) {
+      if (!hasSupabase()) {
+        return db.messages
+          .filter((m) => m.thread_id === threadId)
+          .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
+      }
+
+      const msgRes = await fetch(
+        `${window.__SUPABASE_URL__}/rest/v1/chat_messages?select=*&thread_id=eq.${encodeURIComponent(threadId)}&order=created_at.asc`,
+        { headers: sbHeaders() }
+      );
+
+      if (!msgRes.ok) return [];
+
+      const messages = await msgRes.json();
+      if (!messages.length) return [];
+
+      const trRes = await fetch(
+        `${window.__SUPABASE_URL__}/rest/v1/message_translations?select=*&thread_id=eq.${encodeURIComponent(threadId)}`,
+        { headers: sbHeaders() }
+      );
+
+      const translations = trRes.ok ? await trRes.json() : [];
+      const trMap = new Map(translations.map((t) => [t.message_id, t]));
+
+      return messages.map((m) => {
+        const tr = trMap.get(m.id);
+
+        return {
+          ...m,
+          translated_text: tr?.translated_text || "",
+          translated_language: tr?.language_to || "en",
+          translation_status: tr?.translation_status || "translated"
+        };
+      });
+    }
+
+    function getSupplierName(id) {
+      return db.suppliers.find((s) => s.id === id)?.name || "Unknown";
+    }
+
+    function getOffer(id) {
+      return db.offers.find((o) => o.id === id);
+    }
+
+    function formatPrice(value) {
+      const n = Number(value || 0);
+      return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value || 0);
     }
 
     // UI LAYER
-    const getSupplierName = (id) =>
-      dataStore.suppliers.find(s => s.id === id)?.name || 'Unknown';
+    function render() {
+      const app = document.getElementById("app");
+      app.innerHTML = "";
 
-    function renderSearchPage(root) {
-      const hero = document.createElement('section');
-      hero.className = 'panel hero';
-      hero.innerHTML = `
-        <h1>Поиск модели</h1>
-        <p>Введите модель ноутбука и выберите оффер поставщика.</p>
-        <input class="search-input" placeholder="Введите модель..." value="${state.query}">
+      const header = document.createElement("div");
+      header.className = "card";
+
+      header.innerHTML = `
+        <div class="row" style="justify-content:space-between">
+          <h1>JNPRADAR</h1>
+          <button class="toggle-btn" id="modeToggle">
+            ${state.mode === "buyer" ? "Supplier view" : "Buyer view"}
+          </button>
+        </div>
+        <div class="muted">Покупатель по умолчанию: ${db.buyers[0].name} · Source: ${state.dataSource}</div>
       `;
 
-      hero.querySelector('input').oninput = (e) => {
-        state.query = e.target.value;
-        renderApp();
+      app.appendChild(header);
+
+      header.querySelector("#modeToggle").onclick = () => {
+        state.mode = state.mode === "buyer" ? "supplier" : "buyer";
+        state.selectedOfferId = null;
+        state.selectedSupplierChatId = null;
+        render();
       };
 
-      root.appendChild(hero);
-      renderOffers(root, searchOffers(state.query));
+      if (state.mode === "buyer") renderBuyer(app);
+      else renderSupplier(app);
     }
 
-    function renderOffers(root, offers) {
-      const panel = document.createElement('section');
-      panel.className = 'panel';
+    function renderBuyer(app) {
+      if (!state.selectedOfferId) {
+        const searchCard = document.createElement("div");
+        searchCard.className = "card";
 
-      if (!state.query.trim()) {
-        panel.innerHTML = '<div class="empty">Начните вводить модель для поиска офферов.</div>';
-      } else if (!offers.length) {
-        panel.innerHTML = '<div class="empty">По вашему запросу офферы не найдены.</div>';
+        searchCard.innerHTML = `<input class="search-input" placeholder="Введите модель..." value="${state.query}">`;
+
+        const input = searchCard.querySelector("input");
+
+        input.oninput = (e) => {
+          state.query = e.target.value;
+          render();
+        };
+
+        app.appendChild(searchCard);
+
+        const matches = db.offers.filter((o) =>
+          o.model.toLowerCase().includes(state.query.trim().toLowerCase())
+        );
+
+        const results = document.createElement("div");
+        results.className = "card";
+
+        if (!state.query.trim()) {
+          results.innerHTML = `<div class="empty">Введите модель, чтобы увидеть офферы.</div>`;
+        } else if (!matches.length) {
+          results.innerHTML = `<div class="empty">Совпадений не найдено.</div>`;
+        } else {
+          const wrap = document.createElement("div");
+          wrap.className = "offers-wrap";
+
+          matches.forEach((offer) => {
+            const btn = document.createElement("button");
+            btn.className = "offer-btn";
+
+            btn.innerHTML = `
+              <div class="offer-title">${offer.model}</div>
+              <div class="muted">${offer.configuration}</div>
+              <div class="muted">${formatPrice(offer.price)} ${offer.currency || "AED"} · ${offer.quantity}</div>
+              <div class="muted">${getSupplierName(offer.supplier_id)}</div>
+            `;
+
+            btn.onclick = () => {
+              state.selectedOfferId = offer.id;
+              render();
+            };
+
+            wrap.appendChild(btn);
+          });
+
+          results.appendChild(wrap);
+        }
+
+        app.appendChild(results);
       } else {
-        const grid = document.createElement('div');
-        grid.className = 'offers-grid';
+        renderOfferDetail(app, state.selectedOfferId, "buyer");
+      }
+    }
 
-        offers.forEach(offer => {
-          const card = document.createElement('button');
-          card.className = 'offer-card';
-          card.innerHTML = `
-            <div class="offer-model">${offer.model}</div>
-            <div class="meta">Конфигурация: ${offer.configuration}</div>
-            <div class="meta">Цена: ${offer.price} ${offer.currency || 'AED'}</div>
-            <div class="meta">Количество: ${offer.quantity}</div>
-            <div class="meta">Поставщик: ${getSupplierName(offer.supplier_id)}</div>
+    function renderSupplier(app) {
+      if (!state.selectedSupplierChatId) {
+        const list = document.createElement("div");
+        list.className = "card";
+
+        const title = document.createElement("div");
+        title.className = "chat-title";
+        title.textContent = "Входящие чаты поставщика";
+        list.appendChild(title);
+
+        db.offers.forEach((offer) => {
+          const b = document.createElement("button");
+          b.className = "offer-btn";
+          b.style.width = "100%";
+          b.style.marginBottom = "8px";
+
+          b.innerHTML = `
+            <div class="offer-title">${offer.model}</div>
+            <div class="muted">${offer.configuration}</div>
+            <div class="muted">Покупатель: ${db.buyers[0].name}</div>
           `;
 
-          card.onclick = () => {
+          b.onclick = async () => {
+            const inquiry = await getOrCreateInquiry(offer);
+            const thread = await getOrCreateChatThread(inquiry, offer);
+            state.selectedSupplierChatId = thread.id;
             state.selectedOfferId = offer.id;
-            renderApp();
+            render();
           };
 
-          grid.appendChild(card);
+          list.appendChild(b);
         });
 
-        panel.appendChild(grid);
+        app.appendChild(list);
+      } else {
+        renderOfferDetail(app, state.selectedOfferId, "supplier", state.selectedSupplierChatId);
+      }
+    }
+
+    function renderOfferDetail(app, offerId, role, forcedChatId = null) {
+      const offer = getOffer(offerId);
+
+      if (!offer) {
+        const err = document.createElement("div");
+        err.className = "card";
+        err.innerHTML = '<div class="empty">Оффер не найден.</div>';
+        app.appendChild(err);
+        return;
       }
 
-      root.appendChild(panel);
-    }
+      const wrap = document.createElement("div");
+      wrap.className = "card";
 
-    function renderOfferDetail(root, offer) {
-      const panel = document.createElement('section');
-      panel.className = 'panel';
-
-      panel.innerHTML = `
-        <button id="back" class="btn-secondary">← Назад к поиску</button>
-        <div class="offer-grid">
-          <div><div class="label">Модель</div><div>${offer.model}</div></div>
-          <div><div class="label">Поставщик</div><div>${getSupplierName(offer.supplier_id)}</div></div>
-          <div><div class="label">Конфигурация</div><div>${offer.configuration}</div></div>
-          <div><div class="label">Цена</div><div>${offer.price} ${offer.currency || 'AED'}</div></div>
-          <div><div class="label">Количество</div><div>${offer.quantity}</div></div>
-          <div><div class="label">Описание</div><div>${offer.description}</div></div>
-        </div>
+      wrap.innerHTML = `
+        <button class="back-btn" id="backBtn">← Назад</button>
+        <div class="detail-label">Модель</div><div>${offer.model}</div>
+        <div class="detail-label">Конфигурация</div><div>${offer.configuration}</div>
+        <div class="detail-label">Цена</div><div>${formatPrice(offer.price)} ${offer.currency || "AED"}</div>
+        <div class="detail-label">Количество</div><div>${offer.quantity}</div>
+        <div class="detail-label">Поставщик</div><div>${getSupplierName(offer.supplier_id)}</div>
+        <div class="detail-label">Описание</div><div>${offer.description}</div>
       `;
 
-      panel.querySelector('#back').onclick = () => {
-        state.selectedOfferId = null;
-        renderApp();
+      app.appendChild(wrap);
+
+      wrap.querySelector("#backBtn").onclick = () => {
+        if (role === "buyer") state.selectedOfferId = null;
+        else {
+          state.selectedSupplierChatId = null;
+          state.selectedOfferId = null;
+        }
+
+        render();
       };
 
-      root.appendChild(panel);
-    }
+      const chatCard = document.createElement("div");
+      chatCard.className = "card";
 
-    function renderChat(root, offer) {
-      const thread = getOrCreateChat(offer.id, offer.supplier_id, state.buyerId);
-
-      const panel = document.createElement('section');
-      panel.className = 'panel';
-
-      panel.innerHTML = `
+      chatCard.innerHTML = `
         <div class="chat-title">Чат с продавцом</div>
-        <div id="chatBox" class="chat-box"></div>
-        <div class="chat-row">
-          <input id="msgInput" class="chat-input" placeholder="Введите сообщение" />
-          <button id="send" class="btn">Отправить</button>
+        <div class="chat-box" id="chatBox"><div class="empty">Загрузка...</div></div>
+        <div class="row" style="margin-top:10px">
+          <input class="chat-input" id="msgInput" placeholder="Введите сообщение"/>
+          <button class="send-btn" id="sendBtn">Отправить</button>
         </div>
         <div class="actions-row">
-          <button class="btn">Проверка</button>
-          <button class="btn">Оплата</button>
+          <button class="action-btn">Проверка</button>
+          <button class="action-btn">Оплата</button>
         </div>
       `;
 
-      const box = panel.querySelector('#chatBox');
-      const msgs = dataStore.messages
-        .filter(m => m.thread_id === thread.id)
-        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      app.appendChild(chatCard);
+
+      hydrateChat(chatCard, offer, role, forcedChatId).catch(() => {
+        const chatBox = chatCard.querySelector("#chatBox");
+        chatBox.innerHTML = '<div class="empty">Ошибка загрузки чата.</div>';
+      });
+    }
+
+    async function hydrateChat(chatCard, offer, role, forcedChatId = null) {
+      const inquiry = await getOrCreateInquiry(offer);
+
+      const thread = forcedChatId
+        ? {
+            id: forcedChatId,
+            inquiry_id: inquiry.id,
+            offer_id: offer.id,
+            supplier_id: offer.supplier_id,
+            buyer_id: null
+          }
+        : await getOrCreateChatThread(inquiry, offer);
+
+      const chatBox = chatCard.querySelector("#chatBox");
+      const msgs = await loadThreadMessages(thread.id);
 
       if (!msgs.length) {
-        box.innerHTML = '<div class="empty">Сообщений пока нет.</div>';
+        chatBox.innerHTML = '<div class="empty">Сообщений пока нет.</div>';
+      } else {
+        chatBox.innerHTML = "";
+
+        msgs.forEach((m) => {
+          const sender = m.sender_type || "";
+          const text = m.original_text || "";
+          const translated = m.translated_text || "";
+
+          const div = document.createElement("div");
+          div.className = `msg ${sender === "buyer" ? "msg-buyer" : "msg-supplier"}`;
+
+          div.innerHTML = `
+            <div>${text}</div>
+            <div class="msg-meta">${translated}</div>
+          `;
+
+          chatBox.appendChild(div);
+        });
       }
 
-      msgs.forEach(m => {
-        const b = document.createElement('div');
-        b.className = `msg ${m.senderRole === 'buyer' ? 'msg-buyer' : 'msg-supplier'}`;
-        b.innerHTML = `
-          <div>${m.originalText}</div>
-          <div class="translated">${m.translatedText}</div>
-        `;
-        box.appendChild(b);
-      });
+      chatBox.scrollTop = chatBox.scrollHeight;
 
-      panel.querySelector('#send').onclick = () => {
-        const input = panel.querySelector('#msgInput');
+      chatCard.querySelector("#sendBtn").onclick = async () => {
+        const input = chatCard.querySelector("#msgInput");
         const text = input.value.trim();
+
         if (!text) return;
 
-        sendMessage({
-          threadId: thread.id,
-          offerId: offer.id,
-          supplierId: offer.supplier_id,
-          buyerId: state.buyerId,
-          senderRole: 'buyer',
+        await sendMessage({
+          thread,
+          inquiry,
+          senderType: role === "buyer" ? "buyer" : "supplier",
+          senderDisplayName: role === "buyer" ? db.buyers[0].name : getSupplierName(offer.supplier_id),
           originalText: text,
-          originalLanguage: 'ru'
+          originalLanguage: "ru"
         });
 
-        input.value = '';
-        renderApp();
+        input.value = "";
+        await hydrateChat(chatCard, offer, role, thread.id);
       };
-
-      root.appendChild(panel);
     }
 
-    function renderApp() {
-      const root = document.getElementById('app');
-      root.innerHTML = '';
-
-      if (!state.selectedOfferId) {
-        renderSearchPage(root);
-      } else {
-        const offer = getOfferById(state.selectedOfferId);
-        renderOfferDetail(root, offer);
-        renderChat(root, offer);
-      }
-    }
-
-    (async function init() {
+    async function init() {
       const loaded = await loadDataFromSupabase();
-      if (!loaded) seedFallbackData();
 
-      const firstOffer = dataStore.offers[0];
-      const firstThread = getOrCreateChat(firstOffer.id, firstOffer.supplier_id, state.buyerId);
+      if (!loaded) {
+        seedDataFallback();
+        state.dataSource = "fallback";
+      }
 
-      sendMessage({
-        threadId: firstThread.id,
-        offerId: firstOffer.id,
-        supplierId: firstOffer.supplier_id,
-        buyerId: state.buyerId,
-        senderRole: 'supplier',
-        originalText: 'Здравствуйте! Оффер актуален, готовы ответить на вопросы.',
-        originalLanguage: 'ru'
-      });
+      render();
+    }
 
-      renderApp();
-    })();
+    init();
   </script>
 </body>
 </html>
