@@ -6,7 +6,7 @@ export type RootStackParamList = {
   BuyerConfigurationSelect: undefined;
   BuyerSellerOffers: undefined;
   BuyerProductCard: undefined;
-  BuyerChat: undefined;
+  BuyerChat: { chatId?: string } | undefined;
   BuyerCheckRequest: undefined;
   BuyerDeliveryRequest: undefined;
   BuyerDeals: undefined;

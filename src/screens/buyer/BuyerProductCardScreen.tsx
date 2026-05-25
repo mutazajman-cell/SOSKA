@@ -5,11 +5,13 @@ import type { RootStackParamList } from '../../navigation/types';
 import { getConfiguration, getModel, getSupplier, mockOffers } from '../../data/mock';
 import { ProductSummaryCard } from '../../components/marketplace';
 import { PrimaryButton, ScreenScroll } from '../../components/ui';
+import { useApp } from '../../context/AppContext';
 import { colors, radius, shadows, space } from '../../theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BuyerProductCard'>;
 
 export default function BuyerProductCardScreen({ navigation }: Props) {
+  const { startBuyerSupplierChat } = useApp();
   const o = mockOffers[0];
   const m = getModel(o.model_id);
   const c = getConfiguration(o.configuration_id);
@@ -36,7 +38,13 @@ export default function BuyerProductCardScreen({ navigation }: Props) {
         seller={s?.supplier_name ?? 'Seller'}
         mapsUrl={s?.google_maps_link ?? 'https://www.google.com/maps'}
       />
-      <PrimaryButton label="Message seller in SOSKA" onPress={() => navigation.navigate('BuyerChat')} />
+      <PrimaryButton
+        label="Chat with seller"
+        onPress={() => {
+          const chatId = startBuyerSupplierChat(o.offer_id);
+          navigation.navigate('BuyerChat', { chatId });
+        }}
+      />
     </ScreenScroll>
   );
 }

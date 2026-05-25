@@ -112,6 +112,9 @@ export interface ChatThread {
   chat_id: string;
   type: ChatType;
   deal_id?: string;
+  offer_id?: string;
+  buyer_user_id?: string;
+  supplier_id?: string;
   title: string;
   last_message_preview: string;
   updated_at: string;
@@ -121,8 +124,8 @@ export interface ChatMessage {
   message_id: string;
   chat_id: string;
   sender_role: Role | 'system';
-  body: string;
-  translated_preview?: string;
+  originalText: string;
+  translatedText: string;
   created_at: string;
 }
 
