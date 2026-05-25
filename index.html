@@ -49,28 +49,37 @@
       align-items: center;
     }
 
-    input, button, select { font: inherit; }
+    input,
+    button {
+      font: inherit;
+    }
 
-    .search-input, .chat-input {
+    .search-input,
+    .chat-input {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 12px;
     }
 
-    .toggle-btn, .send-btn, .action-btn, .back-btn {
+    .toggle-btn,
+    .send-btn,
+    .action-btn,
+    .back-btn {
       border: 0;
       border-radius: 12px;
       padding: 10px 12px;
       cursor: pointer;
     }
 
-    .toggle-btn, .back-btn {
+    .toggle-btn,
+    .back-btn {
       background: #eef2f7;
       color: var(--text);
     }
 
-    .send-btn, .action-btn {
+    .send-btn,
+    .action-btn {
       background: var(--primary);
       color: #fff;
     }
@@ -170,7 +179,7 @@
 
     // DATA LAYER
     const db = {
-      buyers: [{ id: null, name: 'Demo Buyer' }],
+      buyers: [{ id: null, name: "Demo Buyer" }],
       suppliers: [],
       offers: [],
       inquiries: [],
@@ -179,25 +188,25 @@
     };
 
     const state = {
-      mode: 'buyer',
+      mode: "buyer",
       buyerId: null,
-      query: '',
+      query: "",
       selectedOfferId: null,
       selectedSupplierChatId: null,
-      dataSource: 'fallback'
+      dataSource: "fallback"
     };
 
     const modelPool = [
-      'Dell Latitude 7430',
-      'HP EliteBook 840 G9',
-      'Lenovo ThinkPad T14 Gen 3',
-      'MacBook Pro 14 M1',
-      'ASUS ZenBook 14',
-      'Acer Swift 5',
-      'Dell XPS 13',
-      'HP ProBook 450 G9',
-      'Lenovo Yoga 7',
-      'MacBook Air M2'
+      "Dell Latitude 7430",
+      "HP EliteBook 840 G9",
+      "Lenovo ThinkPad T14 Gen 3",
+      "MacBook Pro 14 M1",
+      "ASUS ZenBook 14",
+      "Acer Swift 5",
+      "Dell XPS 13",
+      "HP ProBook 450 G9",
+      "Lenovo Yoga 7",
+      "MacBook Air M2"
     ];
 
     function hasSupabase() {
@@ -208,16 +217,16 @@
       return {
         apikey: window.__SUPABASE_ANON_KEY__,
         Authorization: `Bearer ${window.__SUPABASE_ANON_KEY__}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=representation'
+        "Content-Type": "application/json",
+        Prefer: "return=representation"
       };
     }
 
     // SERVICE LAYER
     function makeConfigurationFromRow(cfg) {
-      if (!cfg) return 'N/A';
+      if (!cfg) return "N/A";
       const parts = [cfg.cpu, cfg.ram, cfg.ssd, cfg.screen, cfg.form_factor, cfg.notes].filter(Boolean);
-      return parts.length ? parts.join(' / ') : 'N/A';
+      return parts.length ? parts.join(" / ") : "N/A";
     }
 
     async function loadDataFromSupabase() {
@@ -243,7 +252,9 @@
           )
         ]);
 
-        if (!offersRes.ok || !suppliersRes.ok || !cfgRes.ok || !modelsRes.ok) return false;
+        if (!offersRes.ok || !suppliersRes.ok || !cfgRes.ok || !modelsRes.ok) {
+          return false;
+        }
 
         const offersRows = await offersRes.json();
         const suppliersRows = await suppliersRes.json();
@@ -256,45 +267,99 @@
 
         db.suppliers = suppliersRows.map((s) => ({
           id: s.id,
-          name: s.name || 'Unknown supplier',
-          language: 'en',
-          status: s.status || 'active'
+          name: s.name || "Unknown supplier",
+          language: "en",
+          status: s.status || "active"
         }));
 
         db.offers = offersRows.map((row) => {
           const cfg = cfgById.get(row.configuration_id) || null;
-          const mdl = cfg ? (modelsById.get(cfg.model_id) || null) : null;
-          const modelName = mdl ? [mdl.brand, mdl.model_name].filter(Boolean).join(' ').trim() : 'Unknown model';
+          const mdl = cfg ? modelsById.get(cfg.model_id) || null : null;
+          const modelName = mdl ? [mdl.brand, mdl.model_name].filter(Boolean).join(" ").trim() : "Unknown model";
 
           return {
             id: row.id,
             supplier_id: row.supplier_id,
             configuration_id: row.configuration_id,
-            model: modelName || 'Unknown model',
+            model: modelName || "Unknown model",
             configuration: makeConfigurationFromRow(cfg),
             price: row.price_aed ?? 0,
-            currency: 'AED',
-            quantity: row.qty_text || 'N/A',
-            description: [row.condition, row.grade, row.stock_status].filter(Boolean).join(' · ') || 'Без описания',
-            stock_status: row.stock_status || 'active',
+            currency: "AED",
+            quantity: row.qty_text || "N/A",
+            description: [row.condition, row.grade, row.stock_status].filter(Boolean).join(" · ") || "Без описания",
+            stock_status: row.stock_status || "active",
             created_at: row.created_at,
             updated_at: row.updated_at,
-            supplier_name: suppliersById.get(row.supplier_id)?.name || 'Unknown supplier'
+            supplier_name: suppliersById.get(row.supplier_id)?.name || "Unknown supplier"
           };
         });
 
-        state.dataSource = 'supabase';
+        state.dataSource = "supabase";
         return true;
       } catch {
         return false;
       }
     }
 
+    async function loadSupplierThreads() {
+      if (!hasSupabase()) {
+        return db.chats.map((c) => {
+          const related = db.messages
+            .filter((m) => m.thread_id === c.id)
+            .sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
+
+          return {
+            thread: c,
+            inquiry: db.inquiries.find((i) => i.id === c.inquiry_id) || null,
+            offer: getOffer(c.offer_id) || null,
+            lastMessage: related[0] || null
+          };
+        });
+      }
+
+      const [threadsRes, inquiriesRes, messagesRes] = await Promise.all([
+        fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/chat_threads?select=*&thread_status=eq.active&order=created_at.desc`,
+          { headers: sbHeaders() }
+        ),
+        fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/inquiries?select=*`,
+          { headers: sbHeaders() }
+        ),
+        fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/chat_messages?select=*&order=created_at.desc`,
+          { headers: sbHeaders() }
+        )
+      ]);
+
+      if (!threadsRes.ok || !inquiriesRes.ok || !messagesRes.ok) {
+        return [];
+      }
+
+      const threads = await threadsRes.json();
+      const inquiries = await inquiriesRes.json();
+      const messages = await messagesRes.json();
+      const inquiryById = new Map(inquiries.map((i) => [i.id, i]));
+
+      return threads.map((thread) => {
+        const inquiry = inquiryById.get(thread.inquiry_id) || null;
+        const offer = getOffer(thread.offer_id) || getOffer(inquiry?.offer_id) || null;
+        const lastMessage = messages.find((m) => m.thread_id === thread.id) || null;
+
+        return {
+          thread,
+          inquiry,
+          offer,
+          lastMessage
+        };
+      });
+    }
+
     function seedDataFallback() {
       db.suppliers = [
-        { id: 'sup-1', name: 'TechBridge LLC', language: 'en', status: 'active' },
-        { id: 'sup-2', name: 'NoteLine FZE', language: 'en', status: 'active' },
-        { id: 'sup-3', name: 'Gulf Devices Trading', language: 'ar', status: 'active' }
+        { id: "sup-1", name: "TechBridge LLC", language: "en", status: "active" },
+        { id: "sup-2", name: "NoteLine FZE", language: "en", status: "active" },
+        { id: "sup-3", name: "Gulf Devices Trading", language: "ar", status: "active" }
       ];
 
       db.offers = [];
@@ -311,10 +376,10 @@
             model,
             configuration: `${16 + (i % 3) * 8}GB RAM / ${256 + (i % 4) * 256}GB SSD`,
             price: 2800 + supIdx * 250 + i * 55,
-            currency: 'AED',
+            currency: "AED",
             quantity: `${2 + (i % 6)} шт.`,
-            description: 'used · A grade · active',
-            stock_status: 'active',
+            description: "used · A grade · active",
+            stock_status: "active",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           });
@@ -328,10 +393,10 @@
       sendMessageFallback({
         thread,
         inquiry,
-        senderType: 'supplier',
+        senderType: "supplier",
         senderDisplayName: getSupplierName(firstOffer.supplier_id),
-        originalText: 'Здравствуйте! Товар в наличии.',
-        originalLanguage: 'ru'
+        originalText: "Здравствуйте! Товар в наличии.",
+        originalLanguage: "en"
       });
     }
 
@@ -354,16 +419,16 @@
         offer_id: offer.id,
         supplier_id: offer.supplier_id,
         buyer_id: null,
-        status: 'active'
+        status: "active"
       };
 
       const createRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/inquiries`, {
-        method: 'POST',
+        method: "POST",
         headers: sbHeaders(),
         body: JSON.stringify(payload)
       });
 
-      if (!createRes.ok) throw new Error('inquiry create failed');
+      if (!createRes.ok) throw new Error("inquiry create failed");
       return (await createRes.json())[0];
     }
 
@@ -376,7 +441,7 @@
           offer_id: offer.id,
           supplier_id: offer.supplier_id,
           buyer_id: null,
-          status: 'active',
+          status: "active",
           created_at: new Date().toISOString()
         };
 
@@ -402,19 +467,19 @@
         offer_id: offer.id,
         buyer_id: null,
         supplier_id: offer.supplier_id,
-        thread_status: 'active',
-        buyer_language: 'ru',
-        supplier_language: 'en',
-        translation_status: 'enabled'
+        thread_status: "active",
+        buyer_language: "ru",
+        supplier_language: "en",
+        translation_status: "enabled"
       };
 
       const createRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/chat_threads`, {
-        method: 'POST',
+        method: "POST",
         headers: sbHeaders(),
         body: JSON.stringify(payload)
       });
 
-      if (!createRes.ok) throw new Error('thread create failed');
+      if (!createRes.ok) throw new Error("thread create failed");
       return (await createRes.json())[0];
     }
 
@@ -428,10 +493,10 @@
           offer_id: offer.id,
           buyer_id: null,
           supplier_id: offer.supplier_id,
-          thread_status: 'active',
-          buyer_language: 'ru',
-          supplier_language: 'en',
-          translation_status: 'enabled',
+          thread_status: "active",
+          buyer_language: "ru",
+          supplier_language: "en",
+          translation_status: "enabled",
           created_at: new Date().toISOString()
         };
 
@@ -453,36 +518,37 @@
         sender_display_name: senderDisplayName,
         original_text: originalText,
         original_language: originalLanguage,
-        message_status: 'sent'
+        message_status: "sent"
       };
 
       const msgRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/chat_messages`, {
-        method: 'POST',
+        method: "POST",
         headers: sbHeaders(),
         body: JSON.stringify(msgPayload)
       });
 
-      if (!msgRes.ok) throw new Error('chat_messages insert failed');
-      const msgRow = (await msgRes.json())[0];
+      if (!msgRes.ok) throw new Error("chat_messages insert failed");
+
+      const msg = (await msgRes.json())[0];
 
       const trPayload = {
-        message_id: msgRow.id,
+        message_id: msg.id,
         thread_id: thread.id,
         language_from: originalLanguage,
-        language_to: 'en',
+        language_to: "en",
         translated_text: mockTranslate(originalText),
-        translation_status: 'translated',
-        provider: 'mock'
+        translation_status: "translated",
+        provider: "mock"
       };
 
       const trRes = await fetch(`${window.__SUPABASE_URL__}/rest/v1/message_translations`, {
-        method: 'POST',
+        method: "POST",
         headers: sbHeaders(),
         body: JSON.stringify(trPayload)
       });
 
-      if (!trRes.ok) throw new Error('message_translations insert failed');
-      return msgRow;
+      if (!trRes.ok) throw new Error("message_translations insert failed");
+      return msg;
     }
 
     function sendMessageFallback({ thread, inquiry, senderType, senderDisplayName, originalText, originalLanguage }) {
@@ -494,11 +560,11 @@
         sender_display_name: senderDisplayName,
         original_text: originalText,
         original_language: originalLanguage,
-        message_status: 'sent',
+        message_status: "sent",
         translated_text: mockTranslate(originalText),
-        translated_language: 'en',
-        translation_status: 'translated',
-        provider: 'mock',
+        translated_language: "en",
+        translation_status: "translated",
+        provider: "mock",
         created_at: new Date().toISOString()
       };
 
@@ -510,65 +576,53 @@
       if (!hasSupabase()) {
         return db.messages
           .filter((m) => m.thread_id === threadId)
-          .sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+          .sort((a, b) => (a.created_at || "").localeCompare(b.created_at || ""));
       }
 
-      const msgRes = await fetch(
-        `${window.__SUPABASE_URL__}/rest/v1/chat_messages?select=*&thread_id=eq.${encodeURIComponent(threadId)}&order=created_at.asc`,
-        { headers: sbHeaders() }
-      );
+      const [msgRes, trRes] = await Promise.all([
+        fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/chat_messages?select=*&thread_id=eq.${encodeURIComponent(threadId)}&order=created_at.asc`,
+          { headers: sbHeaders() }
+        ),
+        fetch(
+          `${window.__SUPABASE_URL__}/rest/v1/message_translations?select=*&thread_id=eq.${encodeURIComponent(threadId)}`,
+          { headers: sbHeaders() }
+        )
+      ]);
 
       if (!msgRes.ok) return [];
 
       const messages = await msgRes.json();
-      if (!messages.length) return [];
-
-      const trRes = await fetch(
-        `${window.__SUPABASE_URL__}/rest/v1/message_translations?select=*&thread_id=eq.${encodeURIComponent(threadId)}`,
-        { headers: sbHeaders() }
-      );
-
       const translations = trRes.ok ? await trRes.json() : [];
       const trMap = new Map(translations.map((t) => [t.message_id, t]));
 
-      return messages.map((m) => {
-        const tr = trMap.get(m.id);
-
-        return {
-          ...m,
-          translated_text: tr?.translated_text || '',
-          translated_language: tr?.language_to || 'en',
-          translation_status: tr?.translation_status || 'translated'
-        };
-      });
+      return messages.map((m) => ({
+        ...m,
+        translated_text: trMap.get(m.id)?.translated_text || ""
+      }));
     }
 
-    function getSupplierName(id) {
-      return db.suppliers.find((s) => s.id === id)?.name || 'Unknown';
-    }
-
-    function getOffer(id) {
-      return db.offers.find((o) => o.id === id);
-    }
+    const getSupplierName = (id) => db.suppliers.find((s) => s.id === id)?.name || "Unknown";
+    const getOffer = (id) => db.offers.find((o) => o.id === id);
 
     function formatPrice(value) {
       const n = Number(value || 0);
-      return Number.isFinite(n) ? n.toLocaleString('en-US') : String(value || 0);
+      return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value || 0);
     }
 
     // UI LAYER
     function render() {
-      const app = document.getElementById('app');
-      app.innerHTML = '';
+      const app = document.getElementById("app");
+      app.innerHTML = "";
 
-      const header = document.createElement('div');
-      header.className = 'card';
+      const header = document.createElement("div");
+      header.className = "card";
 
       header.innerHTML = `
         <div class="row" style="justify-content:space-between">
           <h1>JNPRADAR</h1>
           <button class="toggle-btn" id="modeToggle">
-            ${state.mode === 'buyer' ? 'Supplier view' : 'Buyer view'}
+            ${state.mode === "buyer" ? "Supplier view" : "Buyer view"}
           </button>
         </div>
         <div class="muted">Покупатель по умолчанию: ${db.buyers[0].name} · Source: ${state.dataSource}</div>
@@ -576,112 +630,116 @@
 
       app.appendChild(header);
 
-      header.querySelector('#modeToggle').onclick = () => {
-        state.mode = state.mode === 'buyer' ? 'supplier' : 'buyer';
+      header.querySelector("#modeToggle").onclick = () => {
+        state.mode = state.mode === "buyer" ? "supplier" : "buyer";
         state.selectedOfferId = null;
         state.selectedSupplierChatId = null;
         render();
       };
 
-      if (state.mode === 'buyer') renderBuyer(app);
-      else renderSupplier(app);
+      if (state.mode === "buyer") {
+        renderBuyer(app);
+      } else {
+        renderSupplier(app);
+      }
     }
 
     function renderBuyer(app) {
       if (!state.selectedOfferId) {
-        const searchCard = document.createElement('div');
-        searchCard.className = 'card';
+        const search = document.createElement("div");
+        search.className = "card";
 
-        searchCard.innerHTML = `<input class="search-input" placeholder="Введите модель..." value="${state.query}">`;
+        search.innerHTML = `<input class="search-input" placeholder="Введите модель..." value="${state.query}">`;
 
-        const input = searchCard.querySelector('input');
-
-        input.oninput = (e) => {
+        search.querySelector("input").oninput = (e) => {
           state.query = e.target.value;
           render();
         };
 
-        app.appendChild(searchCard);
+        app.appendChild(search);
 
-        const matches = db.offers.filter((o) =>
-          o.model.toLowerCase().includes(state.query.trim().toLowerCase())
-        );
+        const matches = db.offers.filter((o) => o.model.toLowerCase().includes(state.query.trim().toLowerCase()));
 
-        const results = document.createElement('div');
-        results.className = 'card';
+        const res = document.createElement("div");
+        res.className = "card";
 
         if (!state.query.trim()) {
-          results.innerHTML = `<div class="empty">Введите модель, чтобы увидеть офферы.</div>`;
+          res.innerHTML = `<div class="empty">Введите модель, чтобы увидеть офферы.</div>`;
         } else if (!matches.length) {
-          results.innerHTML = `<div class="empty">Совпадений не найдено.</div>`;
+          res.innerHTML = `<div class="empty">Совпадений не найдено.</div>`;
         } else {
-          const wrap = document.createElement('div');
-          wrap.className = 'offers-wrap';
+          const wrap = document.createElement("div");
+          wrap.className = "offers-wrap";
 
           matches.forEach((offer) => {
-            const btn = document.createElement('button');
-            btn.className = 'offer-btn';
+            const b = document.createElement("button");
+            b.className = "offer-btn";
 
-            btn.innerHTML = `
+            b.innerHTML = `
               <div class="offer-title">${offer.model}</div>
               <div class="muted">${offer.configuration}</div>
-              <div class="muted">${formatPrice(offer.price)} ${offer.currency || 'AED'} · ${offer.quantity}</div>
+              <div class="muted">${formatPrice(offer.price)} ${offer.currency || "AED"} · ${offer.quantity}</div>
               <div class="muted">${getSupplierName(offer.supplier_id)}</div>
             `;
 
-            btn.onclick = () => {
+            b.onclick = () => {
               state.selectedOfferId = offer.id;
               render();
             };
 
-            wrap.appendChild(btn);
+            wrap.appendChild(b);
           });
 
-          results.appendChild(wrap);
+          res.appendChild(wrap);
         }
 
-        app.appendChild(results);
+        app.appendChild(res);
       } else {
-        renderOfferDetail(app, state.selectedOfferId, 'buyer');
+        renderOfferDetail(app, state.selectedOfferId, "buyer");
       }
     }
 
-    function renderSupplier(app) {
+    async function renderSupplier(app) {
       if (!state.selectedSupplierChatId) {
-        const list = document.createElement('div');
-        list.className = 'card';
+        const list = document.createElement("div");
+        list.className = "card";
+        list.innerHTML = `<div class="chat-title">Входящие чаты поставщика</div>`;
 
-        const title = document.createElement('div');
-        title.className = 'chat-title';
-        title.textContent = 'Входящие чаты поставщика';
-        list.appendChild(title);
+        const items = await loadSupplierThreads();
 
-        db.offers.forEach((offer) => {
-          const b = document.createElement('button');
-          b.className = 'offer-btn';
-          b.style.width = '100%';
-          b.style.marginBottom = '8px';
+        if (!items.length) {
+          list.innerHTML += `<div class="empty">Входящих чатов пока нет.</div>`;
+        } else {
+          items.forEach((item) => {
+            const offer = item.offer || {};
+            const m = item.lastMessage || {};
 
-          b.innerHTML = `
-            <div class="offer-title">${offer.model}</div>
-            <div class="muted">${offer.configuration}</div>
-            <div class="muted">Покупатель: ${db.buyers[0].name}</div>
-          `;
+            const b = document.createElement("button");
+            b.className = "offer-btn";
+            b.style.width = "100%";
+            b.style.marginBottom = "8px";
 
-          b.onclick = async () => {
-            const inquiry = await getOrCreateInquiry(offer);
-            const thread = await getOrCreateChatThread(inquiry, offer);
-            state.selectedSupplierChatId = thread.id;
-            state.selectedOfferId = offer.id;
-            render();
-          };
+            b.innerHTML = `
+              <div class="offer-title">${offer.model || "Unknown model"}</div>
+              <div class="muted">${offer.configuration || "N/A"}</div>
+              <div class="muted">Поставщик: ${getSupplierName(offer.supplier_id)}</div>
+              <div class="muted">Последнее: ${m.original_text || "—"}</div>
+              <div class="muted">Время: ${m.created_at || item.thread?.created_at || "—"}</div>
+            `;
 
-          list.appendChild(b);
-        });
+            b.onclick = () => {
+              state.selectedSupplierChatId = item.thread.id;
+              state.selectedOfferId = offer.id;
+              render();
+            };
+
+            list.appendChild(b);
+          });
+        }
 
         app.appendChild(list);
       } else {
-        renderOfferDetail(app, state.selectedOfferId, 'supplier', state.selectedSupplierChatId);
+        renderOfferDetail(app, state.selectedOfferId, "supplier", state.selectedSupplierChatId);
       }
     }
 
@@ -689,21 +747,21 @@
       const offer = getOffer(offerId);
 
       if (!offer) {
-        const err = document.createElement('div');
-        err.className = 'card';
-        err.innerHTML = '<div class="empty">Оффер не найден.</div>';
+        const err = document.createElement("div");
+        err.className = "card";
+        err.innerHTML = `<div class="empty">Оффер не найден.</div>`;
         app.appendChild(err);
         return;
       }
 
-      const wrap = document.createElement('div');
-      wrap.className = 'card';
+      const wrap = document.createElement("div");
+      wrap.className = "card";
 
       wrap.innerHTML = `
         <button class="back-btn" id="backBtn">← Назад</button>
         <div class="detail-label">Модель</div><div>${offer.model}</div>
         <div class="detail-label">Конфигурация</div><div>${offer.configuration}</div>
-        <div class="detail-label">Цена</div><div>${formatPrice(offer.price)} ${offer.currency || 'AED'}</div>
+        <div class="detail-label">Цена</div><div>${formatPrice(offer.price)} ${offer.currency || "AED"}</div>
         <div class="detail-label">Количество</div><div>${offer.quantity}</div>
         <div class="detail-label">Поставщик</div><div>${getSupplierName(offer.supplier_id)}</div>
         <div class="detail-label">Описание</div><div>${offer.description}</div>
@@ -711,9 +769,10 @@
 
       app.appendChild(wrap);
 
-      wrap.querySelector('#backBtn').onclick = () => {
-        if (role === 'buyer') state.selectedOfferId = null;
-        else {
+      wrap.querySelector("#backBtn").onclick = () => {
+        if (role === "buyer") {
+          state.selectedOfferId = null;
+        } else {
           state.selectedSupplierChatId = null;
           state.selectedOfferId = null;
         }
@@ -721,10 +780,10 @@
         render();
       };
 
-      const chatCard = document.createElement('div');
-      chatCard.className = 'card';
+      const chat = document.createElement("div");
+      chat.className = "card";
 
-      chatCard.innerHTML = `
+      chat.innerHTML = `
         <div class="chat-title">Чат с продавцом</div>
         <div class="chat-box" id="chatBox"><div class="empty">Загрузка...</div></div>
         <div class="row" style="margin-top:10px">
@@ -737,11 +796,10 @@
         </div>
       `;
 
-      app.appendChild(chatCard);
+      app.appendChild(chat);
 
-      hydrateChat(chatCard, offer, role, forcedChatId).catch(() => {
-        const chatBox = chatCard.querySelector('#chatBox');
-        chatBox.innerHTML = '<div class="empty">Ошибка загрузки чата.</div>';
+      hydrateChat(chat, offer, role, forcedChatId).catch(() => {
+        chat.querySelector("#chatBox").innerHTML = `<div class="empty">Ошибка загрузки чата.</div>`;
       });
     }
 
@@ -758,35 +816,31 @@
           }
         : await getOrCreateChatThread(inquiry, offer);
 
-      const chatBox = chatCard.querySelector('#chatBox');
+      const box = chatCard.querySelector("#chatBox");
       const msgs = await loadThreadMessages(thread.id);
 
       if (!msgs.length) {
-        chatBox.innerHTML = '<div class="empty">Сообщений пока нет.</div>';
+        box.innerHTML = `<div class="empty">Сообщений пока нет.</div>`;
       } else {
-        chatBox.innerHTML = '';
+        box.innerHTML = "";
 
         msgs.forEach((m) => {
-          const sender = m.sender_type || '';
-          const text = m.original_text || '';
-          const translated = m.translated_text || '';
+          const d = document.createElement("div");
+          d.className = `msg ${(m.sender_type || "") === "buyer" ? "msg-buyer" : "msg-supplier"}`;
 
-          const div = document.createElement('div');
-          div.className = `msg ${sender === 'buyer' ? 'msg-buyer' : 'msg-supplier'}`;
-
-          div.innerHTML = `
-            <div>${text}</div>
-            <div class="msg-meta">${translated}</div>
+          d.innerHTML = `
+            <div>${m.original_text || ""}</div>
+            <div class="msg-meta">${m.translated_text || ""}</div>
           `;
 
-          chatBox.appendChild(div);
+          box.appendChild(d);
         });
       }
 
-      chatBox.scrollTop = chatBox.scrollHeight;
+      box.scrollTop = box.scrollHeight;
 
-      chatCard.querySelector('#sendBtn').onclick = async () => {
-        const input = chatCard.querySelector('#msgInput');
+      chatCard.querySelector("#sendBtn").onclick = async () => {
+        const input = chatCard.querySelector("#msgInput");
         const text = input.value.trim();
 
         if (!text) return;
@@ -794,13 +848,13 @@
         await sendMessage({
           thread,
           inquiry,
-          senderType: role === 'buyer' ? 'buyer' : 'supplier',
-          senderDisplayName: role === 'buyer' ? db.buyers[0].name : getSupplierName(offer.supplier_id),
+          senderType: role === "buyer" ? "buyer" : "supplier",
+          senderDisplayName: role === "buyer" ? db.buyers[0].name : getSupplierName(offer.supplier_id),
           originalText: text,
-          originalLanguage: 'ru'
+          originalLanguage: role === "buyer" ? "ru" : "en"
         });
 
-        input.value = '';
+        input.value = "";
         await hydrateChat(chatCard, offer, role, thread.id);
       };
     }
@@ -810,7 +864,7 @@
 
       if (!loaded) {
         seedDataFallback();
-        state.dataSource = 'fallback';
+        state.dataSource = "fallback";
       }
 
       render();
